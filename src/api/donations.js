@@ -14,9 +14,16 @@ export const getDonation = async () => {
 };
 
 // POST - createDonation: 새로운 기부 데이터를 생성합니다.
-export const createDonation = async () => {
+// {
+//   "deadline": "2024-08-28T05:06:02.943Z",
+//   "targetDonation": 0,
+//   "subtitle": "string",
+//   "title": "string",
+//   "idolId": 0
+// }
+export const createDonation = async (donationData) => {
   try {
-    const response = await axios.post(BASE_URL);
+    const response = await axios.post(BASE_URL, donationData);
     return response.data;
   } catch (error) {
     console.error("Error creating donation:", error);
