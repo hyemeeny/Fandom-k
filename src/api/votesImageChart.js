@@ -14,12 +14,12 @@ export const postVotes = async (id) => {
       return {
         success: false,
         status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다.",
+        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
       };
     } else if (error.request) {
       return {
         success: false,
-        message: "서버에서 응답을 받지 못했습니다.",
+        message: "서버에서 응답을 받지 못했습니다",
       };
     } else {
       return {
@@ -42,12 +42,12 @@ export const postImage = async (url) => {
       return {
         success: false,
         status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다.",
+        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
       };
     } else if (error.request) {
       return {
         success: false,
-        message: "서버에서 응답을 받지 못했습니다.",
+        message: "서버에서 응답을 받지 못했습니다",
       };
     } else {
       return {
@@ -74,12 +74,12 @@ export const getCharts = async ({ gender, cursor, pageSize }) => {
       return {
         success: false,
         status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다.",
+        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
       };
     } else if (error.request) {
       return {
         success: false,
-        message: "서버에서 응답을 받지 못했습니다.",
+        message: "서버에서 응답을 받지 못했습니다",
       };
     } else {
       return {
