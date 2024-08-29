@@ -3,9 +3,15 @@ import axios from "axios";
 const BASE_URL = "https://fandom-k-api.vercel.app/9-2/donations";
 
 // GET - getDonation: 특정 ID의 조공 데이터를 가져옵니다.
-export const getDonation = async () => {
+// 작동예시 = getDonation(cursor,pageSize) < type(number)
+export const getDonation = async (cursor = 0, pageSize = 10) => {
   try {
-    const response = await axios.get(BASE_URL);
+    const response = await axios.get(BASE_URL, {
+      params: {
+        cursor: cursor,
+        pageSize: pageSize,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching donation:", error);
