@@ -33,9 +33,19 @@ const ButtonWrapper = styled.button`
     margin-right: 4px;
     height: 20px; /* 아이콘 크기를 설정합니다 */
   }
+
+  &:disabled {
+    background: #828282; /* 비활성화 시 배경색 변경 */
+    cursor: unset;
+    box-shadow: none;
+  }
+  &:disabled:active {
+    box-shadow: none;
+    transform: none; /* :active 효과 막기 */
+  }
 `;
 
-function BoxButton({ size, children, icon }) {
+function BoxButton({ size, children, icon, disabled }) {
   const getSize = () => {
     switch (size) {
       case "small":
@@ -51,7 +61,7 @@ function BoxButton({ size, children, icon }) {
     }
   };
   return (
-    <ButtonWrapper size={getSize()}>
+    <ButtonWrapper size={getSize()} disabled={disabled}>
       {icon && <img src={icon} alt="icon" />}
       {children}
     </ButtonWrapper>
@@ -68,6 +78,7 @@ BoxButton.propTypes = {
   ]),
   children: PropTypes.node.isRequired,
   icon: PropTypes.string, // 아이콘 경로를 문자열로 받습니다.
+  disabled: PropTypes.bool, // 버튼 비활성화를 위한 속성
 };
 
 BoxButton.defaultProps = {
