@@ -122,9 +122,10 @@ const GlobalStyles = () => (
         section {
           display: block;
         }
-        body {
-          line-height: 1;
+        html, body {
+          background-color: #02000e;
           font-family: "Pretendard Variable", sans-serif;
+          font-size: 62.5%;
         }
         ol,
         ul {
