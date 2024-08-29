@@ -1,17 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { Route, Routes } from "react-router-dom";
 import GlobalStyles from "./styles/global";
-import RadioButtonGroup from "./components/RadioButton/RadioButtonGroup";
+import RadioButton from "./components/RadioButton";
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <Routes>
+      {/* <Routes>
         <Route path="/" />
         <Route path="/list" />
         <Route path="/mypage" />
-      </Routes>
+      </Routes> */}
+      <RadioButton />
     </>
   );
 }
