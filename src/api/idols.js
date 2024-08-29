@@ -3,12 +3,14 @@ import axios from "axios";
 const BASE_URL = "https://fandom-k-api.vercel.app";
 
 // 아이돌 목록 조회
-export const getIdols = async () => {
-  const queryParams = { cursor: 0, pageSize: 10, keyword: "" };
-
+export const getIdols = async (cursor = 0, pageSize = 10, keyword = "") => {
   try {
     const response = await axios.get(`${BASE_URL}/9-2/idols`, {
-      params: queryParams,
+      params: {
+        cursor: cursor, // cursor 값을 직접 전달
+        pageSize: pageSize,
+        keyword: keyword,
+      },
     });
     return response.data;
   } catch (error) {
@@ -16,7 +18,6 @@ export const getIdols = async () => {
     throw error;
   }
 };
-
 // 새로운 아이돌 생성
 export const postIdols = async () => {
   try {
