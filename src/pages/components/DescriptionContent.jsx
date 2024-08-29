@@ -89,23 +89,35 @@ const GradientBar = styled.div`
 `;
 
 const DescriptionImgWrap = styled.div`
-  opacity: 0;
-  transform: translateY(50px);
-
-  &.event {
+  &.show {
     opacity: 1;
-    transform: translateY(0);
     animation: fadeIn 1s ease-out forwards;
+  }
+
+  &.hide {
+    opacity: 0;
+    animation: fadeOut 1s ease-out forwards;
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(-50px);
+      transform: translateY(100px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(100px);
     }
   }
 

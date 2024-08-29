@@ -10,10 +10,12 @@ export const useScrollAnimation = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           // 요소가 뷰포트에 나타났을 경우
-          entry.target.classList.add("event");
+          entry.target.classList.add("show");
+          entry.target.classList.remove("hide");
         } else {
           // 요소가 뷰포트를 벗어난 경우
-          entry.target.classList.remove("event");
+          entry.target.classList.remove("show");
+          entry.target.classList.add("hide");
         }
       });
     };

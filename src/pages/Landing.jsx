@@ -11,6 +11,7 @@ import BackgroundImg3 from "../assets/img/nct.svg";
 import DescriptionImg1 from "../assets/img/home_1.svg";
 import DescriptionImg2 from "../assets/img/home_2.svg";
 import DescriptionImg3 from "../assets/img/home_3.svg";
+import BoxButton from "../components/BoxButton";
 import DescriptionContent from "./components/DescriptionContent";
 
 const Landing = () => {
@@ -56,7 +57,7 @@ const Landing = () => {
           </motion.div>
         </TitleWrap>
         <Link to="/list" className="link-button">
-          <button>지금 시작하기</button>
+          <BoxButton size="large">지금 시작하기</BoxButton>
         </Link>
       </Container>
       <DescriptionContent
@@ -106,6 +107,13 @@ export const Container = styled.section`
   .link-button {
     position: absolute;
     bottom: 15%;
+    text-decoration-line: none;
+
+    @media (max-width: 744px) {
+      & > button {
+        width: 230px;
+      }
+    }
   }
 
   &.TopDesign {
