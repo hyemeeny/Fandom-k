@@ -14,8 +14,6 @@ const RadioWrapper = styled.div`
   :hover {
     cursor: pointer;
   }
-
-  background-color: red;
 `;
 
 const Radio = styled.input`
