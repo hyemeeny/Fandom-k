@@ -1,6 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import { Route, Routes } from "react-router-dom";
 import GlobalStyles from "./styles/global";
+import MonthChart from "./components/MonthChart/MonthChart";
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <GlobalStyles />
       <Routes>
         <Route path="/" />
-        <Route path="/list" />
+        <Route path="/list" element={<MonthChart />} />
         <Route path="/mypage" />
       </Routes>
     </>
