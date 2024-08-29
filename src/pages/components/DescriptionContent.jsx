@@ -52,7 +52,7 @@ const DescriptionContent = React.forwardRef(
 export default DescriptionContent;
 
 const SubTitle = styled.p`
-  font-size: 1.6rem;
+  font-size: 16px;
   font-weight: 500;
   text-align: center;
   color: #d2c030;
@@ -60,7 +60,7 @@ const SubTitle = styled.p`
 
   @media (max-width: 744px) {
     text-align: left;
-    font-size: 1.4rem;
+    font-size: 14px;
   }
 `;
 

@@ -171,14 +171,14 @@ export const BackgroundGradient = styled.div`
 
 export const Title = styled.h2`
   font-family: Pretendard;
-  font-size: ${({ size }) => (size === "small" ? "2.4rem" : "2.6rem")};
+  font-size: ${({ size }) => (size === "small" ? "24px" : "26px")};
   font-weight: 700;
   text-align: center;
   color: #ffffff;
   white-space: pre-line;
 
   @media (max-width: 1200px) {
-    font-size: 2rem;
+    font-size: 20px;
   }
 
   span {
