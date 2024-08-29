@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styled from "@emotion/styled";
 import LogoImg from "../assets/img/logo.svg";
 import UserImg from "../assets/img/userIcon.svg";
@@ -7,19 +7,22 @@ import TopImg from "../assets/img/top_design.svg";
 
 const Header = () => {
   return (
-    <HeaderStyle>
-      <TopStyle src={TopImg} />
-      <Container>
-        <LogoWrap>
-          <Link to="/list">
-            <Logo src={LogoImg} alt="FAMDOM-K" />
+    <>
+      <HeaderStyle>
+        <TopStyle src={TopImg} />
+        <Container>
+          <LogoWrap>
+            <Link to="/list">
+              <Logo src={LogoImg} alt="FAMDOM-K" />
+            </Link>
+          </LogoWrap>
+          <Link to="/myPage">
+            <User src={UserImg} alt="프로필 이미지" />
           </Link>
-        </LogoWrap>
-        <Link to="/myPage">
-          <User src={UserImg} alt="프로필 이미지" />
-        </Link>
-      </Container>
-    </HeaderStyle>
+        </Container>
+      </HeaderStyle>
+      <Outlet />
+    </>
   );
 };
 
@@ -43,7 +46,7 @@ const TopStyle = styled.img`
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: -1;
 `;
 
 const Container = styled.div`
