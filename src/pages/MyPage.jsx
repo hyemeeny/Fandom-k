@@ -1,5 +1,5 @@
 import styled from "@emotion/styled/macro";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedIdols")) || [];
@@ -16,6 +16,13 @@ export default function MyPage() {
   // 3. 저장되어 있다면 ? -> 선택된, 저장이 안되어 있다면 ? -> 선택 가능한.
   // 4. 흠...
 
+  function handleLeftClick() {
+    console.log("click");
+  }
+
+  function handleRightClick() {
+    console.log("click");
+  }
   // 저장된것 분기처리
   return (
     <Container>
@@ -25,8 +32,8 @@ export default function MyPage() {
       <AddWrapper>
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
         <Slide>
-          <LeftArrowButton />
-          <RightArrowButton />
+          <LeftArrowButton onClick={handleLeftClick} />
+          <RightArrowButton onClick={handleRightClick} />
         </Slide>
       </AddWrapper>
     </Container>

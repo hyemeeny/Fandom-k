@@ -10,6 +10,7 @@ const Button = styled.button`
   padding: 0;
   cursor: pointer;
 
+  z-index: 9999;
   // 버튼이 이미지로 동작하도록 이미지 크기를 버튼 크기로 설정
   img {
     display: block;
