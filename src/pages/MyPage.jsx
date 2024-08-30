@@ -1,6 +1,7 @@
 import styled from "@emotion/styled/macro";
 import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
+import BoxButton from "../components/BoxButton";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedIdols")) || [];
 // const storedIdols = storedIds.map((id)) 받아온 데이터랑 사용.
@@ -23,6 +24,10 @@ export default function MyPage() {
   function handleRightClick() {
     console.log("click");
   }
+
+  function handleAdd() {
+    console.log("click");
+  }
   // 저장된것 분기처리
   return (
     <Container>
@@ -35,6 +40,9 @@ export default function MyPage() {
           <LeftArrowButton onClick={handleLeftClick} />
           <RightArrowButton onClick={handleRightClick} />
         </Slide>
+        <BoxButton size="medium" onClick={handleAdd}>
+          추가하기
+        </BoxButton>
       </AddWrapper>
     </Container>
   );
@@ -42,7 +50,9 @@ export default function MyPage() {
 
 const InterestedWrappper = styled.section``;
 
-const AddWrapper = styled.section``;
+const AddWrapper = styled.section`
+  width: 1200px;
+`;
 
 const Container = styled.div`
   width: 1200px;
