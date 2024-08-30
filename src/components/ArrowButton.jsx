@@ -32,17 +32,17 @@ const Button = styled.button`
   }
 `;
 
-export function LeftArrowButton() {
+export function LeftArrowButton({ className, onClick }) {
   return (
-    <Button type="button">
+    <Button type="button" onClick={onClick} className={className}>
       <img src={slideLeft} alt="왼쪽 슬라이드 버튼" />
     </Button>
   );
 }
 
-export function RightArrowButton() {
+export function RightArrowButton({ className, onClick }) {
   return (
-    <Button type="button">
+    <Button type="button" onClick={onClick} className={className}>
       <img src={slideRight} alt="오른쪽 슬라이드 버튼" />
     </Button>
   );

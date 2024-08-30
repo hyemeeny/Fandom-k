@@ -45,7 +45,7 @@ const ButtonWrapper = styled.button`
   }
 `;
 
-function BoxButton({ size, children, icon, disabled }) {
+function BoxButton({ size, children, icon, disabled, className }) {
   const getSize = () => {
     switch (size) {
       case "small":
@@ -61,7 +61,7 @@ function BoxButton({ size, children, icon, disabled }) {
     }
   };
   return (
-    <ButtonWrapper size={getSize()} disabled={disabled}>
+    <ButtonWrapper size={getSize()} disabled={disabled} className={className}>
       {icon && <img src={icon} alt="icon" />}
       {children}
     </ButtonWrapper>
