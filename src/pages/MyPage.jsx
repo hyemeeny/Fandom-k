@@ -2,7 +2,7 @@ import styled from "@emotion/styled/macro";
 import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
-import { FaPlus } from "react-icons/fa6";
+import addIcon from "../assets/icon/add_icon.svg";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedIdols")) || [];
 // const storedIdols = storedIds.map((id)) 받아온 데이터랑 사용.
@@ -46,7 +46,7 @@ export default function MyPage() {
           size="medium"
           onClick={handleAdd}
           isRound={true}
-          icon={<FaPlus />}
+          icon={addIcon}
         >
           추가하기
         </BoxButton>
