@@ -7,16 +7,12 @@ import { getIdols } from "../api/idols";
 import Avatar from "../components/Avatar";
 
 const storedIds = JSON.parse(localStorage.getItem("addedIdols")) || [];
-// const storedIdols = storedIds.map((id)) 받아온 데이터랑 사용.
 
 export default function MyPage() {
-  // storedIds 하나 , 선택돼서 저장된 아이돌 하나, 선택 상태인 아이돌들 하나
-  const [selectedIdols, setSelectedIdols] = useState([]);
-  const [addedIdols, setAddedIdols] = useState([]);
+  const [addedIdols, setAddedIdols] = useState(storedIds); // 관심있는 아이돌
+  const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
   const [idols, setIdols] = useState([]);
   const [cursor, setCursor] = useState(null);
-
-  // 1. idols를 데이터로 받아아온다.
 
   // Idol 호출 함수
   const handleLoadIdols = async ({ option }) => {
@@ -36,9 +32,6 @@ export default function MyPage() {
   useEffect(() => {
     handleLoadIdols({ cursor: 0, keyword: "" });
   }, []);
-  // 2. 'selectedIodls' 에 로컬 스토리지에 저장되어있는지 확인
-  // 3. 저장되어 있다면 ? -> 선택된, 저장이 안되어 있다면 ? -> 선택 가능한.
-  // 4. 흠...
 
   function handleLeftClick() {
     console.log("click");
@@ -49,8 +42,10 @@ export default function MyPage() {
   }
 
   function handleSelect(id) {
-    console.log(id);
-    // 만약 이미 데이터가 저장된 상태면 빼버리기 기능 추가
+    if (selectedIdols.includes(id)) {
+      setSelectedIdols((prevList) => prevList.filter((item) => item !== id));
+      return;
+    }
     setSelectedIdols((prevList) => [...prevList, id]);
   }
 
@@ -68,10 +63,7 @@ export default function MyPage() {
           {idols.map((idol) => {
             if (addedIdols.includes(idol.id)) {
               return (
-                <ProfileWrapper
-                  key={idol.id}
-                  onClick={() => handleSelect(idol.id)}
-                >
+                <ProfileWrapper key={idol.id}>
                   <Avatar imageUrl={idol.profilePicture} />
                   <Name>{idol.name}</Name>
                   <Group>{idol.group}</Group>
@@ -81,6 +73,7 @@ export default function MyPage() {
           })}
         </FavoriteWrapper>
       </AddedWrapper>
+      <Divider />
       <AddWrapper>
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
         <Slide>
@@ -88,7 +81,22 @@ export default function MyPage() {
             <LeftArrowButton onClick={handleLeftClick} />
           </ArrowWarpper>
           {idols.map((idol) => {
-            if (selectedIdols.includes(idol.id)) {
+            if (
+              selectedIdols.includes(idol.id) &&
+              addedIdols.includes(idol.id) === false
+            ) {
+              return (
+                <ProfileWrapper
+                  key={idol.id}
+                  onClick={() => handleSelect(idol.id)}
+                >
+                  <Avatar imageUrl={idol.profilePicture} />
+                  <Name>{idol.name}</Name>
+                  <Group>{idol.group}</Group>
+                  <p style={{ color: "white" }}>추가됨</p>
+                </ProfileWrapper>
+              );
+            } else if (!selectedIdols.includes(idol.id)) {
               return (
                 <ProfileWrapper
                   key={idol.id}
@@ -100,29 +108,21 @@ export default function MyPage() {
                 </ProfileWrapper>
               );
             }
-            return (
-              <ProfileWrapper
-                key={idol.id}
-                onClick={() => handleSelect(idol.id)}
-              >
-                <Avatar imageUrl={idol.profilePicture} />
-                <Name>{idol.name}</Name>
-                <Group>{idol.group}</Group>
-              </ProfileWrapper>
-            );
           })}
           <ArrowWarpper direction="right">
             <RightArrowButton onClick={handleRightClick} />
           </ArrowWarpper>
         </Slide>
-        <BoxButton
-          size="medium"
-          onClick={handleAdd}
-          isRound={true}
-          icon={addIcon}
-        >
-          추가하기
-        </BoxButton>
+        <BoxButtonWrapper>
+          <BoxButton
+            size="medium"
+            onClick={handleAdd}
+            isRound={true}
+            icon={addIcon}
+          >
+            추가하기
+          </BoxButton>
+        </BoxButtonWrapper>
       </AddWrapper>
     </Container>
   );
@@ -133,6 +133,13 @@ const AddedWrapper = styled.section``;
 const AddWrapper = styled.section`
   width: 1200px;
   margin-top: 40px;
+  margin: 0 auto;
+`;
+
+const Divider = styled.div`
+  width: 1200px;
+  border-top: 1px solid var(--gray-300);
+  margin: 30px 0;
 `;
 
 const FavoriteWrapper = styled.div`
@@ -170,9 +177,9 @@ const Slide = styled.div`
 
 const ArrowWarpper = styled.div`
   position: absolute;
-  top: 40%;
-  left: ${(props) => (props.direction === "left" ? "-4%" : "")};
-  right: ${(props) => (props.direction === "right" ? "-4%" : "")};
+  top: 25%;
+  left: ${(props) => (props.direction === "left" ? "-5%" : "")};
+  right: ${(props) => (props.direction === "right" ? "-5%" : "")};
 `;
 
 const ProfileWrapper = styled.div`
@@ -193,4 +200,10 @@ const Group = styled.p`
   font-size: 14px;
   font-weight: 400;
   color: #ffffff99;
+`;
+
+const BoxButtonWrapper = styled.div`
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
 `;
