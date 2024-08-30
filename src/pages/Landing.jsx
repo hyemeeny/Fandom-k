@@ -12,7 +12,7 @@ import DescriptionImg1 from "../assets/img/home_1.svg";
 import DescriptionImg2 from "../assets/img/home_2.svg";
 import DescriptionImg3 from "../assets/img/home_3.svg";
 import BoxButton from "../components/BoxButton";
-import DescriptionContent from "./components/DescriptionContent";
+import DescriptionContent from "../components/DescriptionContent";
 
 const Landing = () => {
   const { target1, target2, target3 } = useScrollAnimation();
