@@ -15,7 +15,6 @@ export default function MyPage() {
   const [idols, setIdols] = useState([]);
   const [cursor, setCursor] = useState(null);
 
-  // Idol 호출 함수
   const handleLoadIdols = async ({ option }) => {
     let result;
     try {
@@ -214,14 +213,4 @@ const DeleteButton = styled.img`
   position: absolute;
   right: 3px;
   z-index: 1;
-`;
-
-const SelectedImage = styled.img`
-  width: 30%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-  position: absolute;
-  z-index: 2;
 `;
