@@ -183,9 +183,21 @@ const MoreView = styled.button`
   line-height: 26px;
   cursor: pointer;
 
+  &:active {
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+      rgba(0, 0, 0, 0.23) 0px 6px 6px, inset 2px 2px 5px rgba(0, 0, 0, 0.3),
+      inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    transform: translateY(2px); /* 버튼이 눌린 것 같은 효과 */
+  }
+
   &:disabled {
     background-color: var(--gray-200);
     border: none;
+    cursor: unset;
+  }
+  &:disabled:active {
+    box-shadow: none;
+    transform: none; /* :active 효과 막기 */
   }
 `;
 
