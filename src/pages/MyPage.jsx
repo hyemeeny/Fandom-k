@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
+import deleteIcon from "../assets/icon/delete_icon.svg";
 import { getIdols } from "../api/idols";
 import Avatar from "../components/Avatar";
 
@@ -54,6 +55,10 @@ export default function MyPage() {
     setAddedIdols(newList);
   }
 
+  function handleDelete() {
+    console.log("Delete");
+  }
+
   // 저장된것 분기처리
   return (
     <Container>
@@ -64,6 +69,7 @@ export default function MyPage() {
             if (addedIdols.includes(idol.id)) {
               return (
                 <ProfileWrapper key={idol.id}>
+                  <DeleteButton onClick={handleDelete} src={deleteIcon} />
                   <Avatar imageUrl={idol.profilePicture} />
                   <Name>{idol.name}</Name>
                   <Group>{idol.group}</Group>
@@ -186,6 +192,7 @@ const ProfileWrapper = styled.div`
   width: 100%;
   text-align: center;
   cursor: pointer;
+  position: relative;
   z-index: 9999;
 `;
 
@@ -206,4 +213,17 @@ const BoxButtonWrapper = styled.div`
   margin-top: 48px;
   display: flex;
   justify-content: center;
+`;
+
+const DeleteButton = styled.img`
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 3px;
+  z-index: 1;
+`;
+
+const selectedImage = styled.img`
+  border-radius: 50%;
+  object-fit: cover;
 `;
