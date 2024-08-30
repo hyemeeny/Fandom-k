@@ -68,7 +68,10 @@ export const getCharts = async ({ gender, cursor, pageSize }) => {
       },
     });
 
-    return response.data;
+    return {
+      success: true, // 모든 성공적인 응답에 success: true 추가
+      ...response.data,
+    };
   } catch (error) {
     if (error.response) {
       return {
