@@ -2,6 +2,7 @@ import styled from "@emotion/styled/macro";
 import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
+import { FaPlus } from "react-icons/fa6";
 
 const storedIds = JSON.parse(localStorage.getItem("selectedIdols")) || [];
 // const storedIdols = storedIds.map((id)) 받아온 데이터랑 사용.
@@ -28,19 +29,25 @@ export default function MyPage() {
   function handleAdd() {
     console.log("click");
   }
+
   // 저장된것 분기처리
   return (
     <Container>
-      <InterestedWrappper>
+      <AddedWrapper>
         <Title> 내가 관심있는 아이돌</Title>
-      </InterestedWrappper>
+      </AddedWrapper>
       <AddWrapper>
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
         <Slide>
           <LeftArrowButton onClick={handleLeftClick} />
           <RightArrowButton onClick={handleRightClick} />
         </Slide>
-        <BoxButton size="medium" onClick={handleAdd}>
+        <BoxButton
+          size="medium"
+          onClick={handleAdd}
+          isRound={true}
+          icon={<FaPlus />}
+        >
           추가하기
         </BoxButton>
       </AddWrapper>
@@ -48,10 +55,11 @@ export default function MyPage() {
   );
 }
 
-const InterestedWrappper = styled.section``;
+const AddedWrapper = styled.section``;
 
 const AddWrapper = styled.section`
   width: 1200px;
+  margin-top: 40px;
 `;
 
 const Container = styled.div`
