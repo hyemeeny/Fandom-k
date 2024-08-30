@@ -55,8 +55,10 @@ export default function MyPage() {
     setAddedIdols(newList);
   }
 
-  function handleDelete() {
-    console.log("Delete");
+  function handleDelete(id) {
+    if (addedIdols.includes(id)) {
+      setAddedIdols((prevList) => prevList.filter((item) => item !== id));
+    }
   }
 
   // 저장된것 분기처리
@@ -69,7 +71,10 @@ export default function MyPage() {
             if (addedIdols.includes(idol.id)) {
               return (
                 <ProfileWrapper key={idol.id}>
-                  <DeleteButton onClick={handleDelete} src={deleteIcon} />
+                  <DeleteButton
+                    onClick={() => handleDelete(idol.id)}
+                    src={deleteIcon}
+                  />
                   <Avatar imageUrl={idol.profilePicture} />
                   <Name>{idol.name}</Name>
                   <Group>{idol.group}</Group>
@@ -87,33 +92,21 @@ export default function MyPage() {
             <LeftArrowButton onClick={handleLeftClick} />
           </ArrowWarpper>
           {idols.map((idol) => {
-            if (
-              selectedIdols.includes(idol.id) &&
-              addedIdols.includes(idol.id) === false
-            ) {
-              return (
-                <ProfileWrapper
-                  key={idol.id}
-                  onClick={() => handleSelect(idol.id)}
-                >
-                  <Avatar imageUrl={idol.profilePicture} />
-                  <Name>{idol.name}</Name>
-                  <Group>{idol.group}</Group>
-                  <p style={{ color: "white" }}>추가됨</p>
-                </ProfileWrapper>
-              );
-            } else if (!selectedIdols.includes(idol.id)) {
-              return (
-                <ProfileWrapper
-                  key={idol.id}
-                  onClick={() => handleSelect(idol.id)}
-                >
-                  <Avatar imageUrl={idol.profilePicture} />
-                  <Name>{idol.name}</Name>
-                  <Group>{idol.group}</Group>
-                </ProfileWrapper>
-              );
-            }
+            const isSelected =
+              selectedIdols.includes(idol.id) && !addedIdols.includes(idol.id);
+            return (
+              <ProfileWrapper
+                key={idol.id}
+                onClick={() => handleSelect(idol.id)}
+              >
+                <Avatar
+                  imageUrl={idol.profilePicture}
+                  isSelected={isSelected}
+                />
+                <Name>{idol.name}</Name>
+                <Group>{idol.group}</Group>
+              </ProfileWrapper>
+            );
           })}
           <ArrowWarpper direction="right">
             <RightArrowButton onClick={handleRightClick} />
@@ -223,7 +216,12 @@ const DeleteButton = styled.img`
   z-index: 1;
 `;
 
-const selectedImage = styled.img`
-  border-radius: 50%;
+const SelectedImage = styled.img`
+  width: 30%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   object-fit: cover;
+  position: absolute;
+  z-index: 2;
 `;
