@@ -128,10 +128,11 @@ const GlobalStyles = () => (
         section {
           display: block;
         }
-        body {
-          line-height: 1;
+        body,html {
           font-family: "Pretendard Variable", sans-serif;
+          background-color: #02000e;
         }
+          
         ol,
         ul {
           list-style: none;
@@ -159,6 +160,7 @@ const GlobalStyles = () => (
           --gray-blue: #8c92ab;
           --gray-100: #a3a5a8;
           --white: #F7F7F8;
+          --white-darker: #F6F6F8;
           --coralpink: #f96d69;
           --hotpink: #fe5493;
           }
