@@ -10,19 +10,20 @@ import closedWindow from "../../assets/btn/close_window.svg";
 const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
   const [idolList, setIdolList] = useState([]);
   const [selectedVote, setSelectedVote] = useState(null);
-  const [myCredit, setMyCredit] = useState();
+  const [myCredit, setMyCredit] = useState(0);
 
   // 크레딧 로컬스토리지
   useEffect(() => {
-    const data = localStorage.getItem("credit");
-    if (data) {
-      setMyCredit(data);
+    localStorage.setItem("credit", JSON.stringify(1000));
+    const credit = localStorage.getItem("credit");
+    if (credit) {
+      setMyCredit(credit);
     } else {
       setMyCredit(0);
     }
-  }, []);
+  }, [myCredit]);
 
-  // 아이돌 차트 조회하기
+  // 아이돌 차트 조회
   useEffect(() => {
     const handleChartLoad = async () => {
       const chart = await getCharts(activeTapValue);
@@ -45,7 +46,7 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
   const handleVoteLoad = async () => {
     if (selectedVote) {
       const newCredit = Number(myCredit) - 1000;
-      if (newCredit > 0) {
+      if (newCredit >= 0) {
         await postVotes(selectedVote);
         setMyCredit(newCredit);
         const selectedIdol = idolList.find((idol) => idol.id === selectedVote);
