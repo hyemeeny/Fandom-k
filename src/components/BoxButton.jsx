@@ -9,7 +9,7 @@ const ButtonWrapper = styled.button`
   background: linear-gradient(90deg, var(--coralpink) 0%, var(--hotpink) 100%);
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: ${(props) => (props.isRound ? "24px" : "3px")};
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -45,7 +45,7 @@ const ButtonWrapper = styled.button`
   }
 `;
 
-function BoxButton({ size, children, icon, disabled, className }) {
+function BoxButton({ size, children, icon, disabled, onClick, className, isRound }) {
   const getSize = () => {
     switch (size) {
       case "small":
@@ -61,7 +61,13 @@ function BoxButton({ size, children, icon, disabled, className }) {
     }
   };
   return (
-    <ButtonWrapper size={getSize()} disabled={disabled} className={className}>
+    <ButtonWrapper
+      size={getSize()}
+      disabled={disabled}
+      onClick={onClick}
+      className={className}
+      isRound={isRound}
+    >
       {icon && <img src={icon} alt="icon" />}
       {children}
     </ButtonWrapper>
@@ -79,9 +85,13 @@ BoxButton.propTypes = {
   children: PropTypes.node.isRequired,
   icon: PropTypes.string, // 아이콘 경로를 문자열로 받습니다.
   disabled: PropTypes.bool, // 버튼 비활성화를 위한 속성
+  onClick: PropTypes.func,
+  isRound: PropTypes.bool,
 };
 
 BoxButton.defaultProps = {
   size: "medium",
+  isRound: false,
 };
+
 export default BoxButton;

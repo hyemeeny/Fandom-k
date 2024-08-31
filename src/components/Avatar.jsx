@@ -3,6 +3,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
+import checkIcon from "../assets/icon/check_icon.svg";
+
 const AvatarWrapper = styled.div`
   width: 100%; /* 부모 요소의 너비에 따라 너비가 결정됨 */
   aspect-ratio: 1 / 1; /* 1:1 비율로 높이를 너비와 동일하게 설정 */
@@ -20,11 +22,49 @@ const AvatarImage = styled.img`
   height: 92%;
   border-radius: 50%;
   object-fit: cover;
+
+  background: linear-gradient(
+    45deg,
+    rgba(249, 109, 105, 0.5),
+    /* coralpink */ rgba(254, 84, 147, 0.5) /* hotpink */
+  );
 `;
-function Avatar({ imageUrl }) {
+
+const GradientOverlay = styled.div`
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  width: 92%;
+  height: 92%;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    rgba(249, 109, 105, 0.5),
+    /* coralpink */ rgba(254, 84, 147, 0.5) /* hotpink */
+  );
+  opacity: ${(props) => (props.isSelected ? 0.5 : 0)};
+  pointer-events: none;
+  z-index: 2;
+`;
+const SelectedImage = styled.img`
+  width: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+`;
+
+function Avatar({ imageUrl, isSelected }) {
   return (
     <AvatarWrapper>
-      <AvatarImage src={imageUrl} alt="Avatar" />
+      <AvatarImage src={imageUrl} alt="Avatar" isSelected={isSelected} />
+      {isSelected && (
+        <>
+          <GradientOverlay isSelected={isSelected} />
+          <SelectedImage src={checkIcon} alt="Selected Icon" />
+        </>
+      )}
     </AvatarWrapper>
   );
 }

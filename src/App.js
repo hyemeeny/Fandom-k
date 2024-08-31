@@ -1,15 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 import GlobalStyles from "./styles/global";
-import MonthChart from "./components/MonthChart/MonthChart";
+import List from "./pages/List";
+import Header from "./components/Header";
+import Landing from "./pages/Landing";
+import MyPage from "./pages/MyPage";
+import { LeftArrowButton } from "./components/ArrowButton";
 
 function App() {
   return (
     <>
       <GlobalStyles />
       <Routes>
-        <Route path="/" />
-        <Route path="/list" element={<MonthChart />} />
-        <Route path="/mypage" />
+        <Route path="/" element={<Landing />} />
+        <Route element={<Header />}>
+          <Route path="/list" element={<List />} />
+          <Route path="/mypage" element={<MyPage />} />
+        </Route>
       </Routes>
     </>
   );

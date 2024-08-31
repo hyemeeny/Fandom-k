@@ -6,7 +6,7 @@ import {
   BackgroundImg,
   BackgroundGradient,
   Title,
-} from "../Landing";
+} from "../pages/Landing";
 
 const DescriptionContent = React.forwardRef(
   ({ title, subtitle, descriptionImg, backgroundImg }, ref) => {
@@ -73,6 +73,7 @@ const GradientBar = styled.div`
   width: 187px;
   height: 100%;
   z-index: 0;
+  opacity: 0.8;
 
   @media (max-width: 1200px) {
     width: 117px;
