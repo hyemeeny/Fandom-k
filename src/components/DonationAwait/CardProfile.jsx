@@ -13,8 +13,12 @@ const CardWrapper = styled.div`
   flex-direction: column;
   align-items: center;
 
-  @media (max-width: 768px) {
-    width: 158px;
+  @media (max-width: 1200px) {
+    width: auto;
+  }
+
+  @media (max-width: 744px) {
+    margin: 0 8px 0 0;
   }
 `;
 
@@ -32,18 +36,19 @@ const CardImage = styled.img`
 const Overlay = styled(CoverDonation)`
   position: absolute;
   top: 0px;
-  width: 100%;
-  height: 100%;
+  width: 150%;
+  height: 105%;
 `;
 
 const StyledBoxButton = styled(BoxButton)`
-  position: absolute; /* 절대 위치 지정 */
-  bottom: 20px; /* 하단에서 20px 위로 */
-  left: 50%; /* 수평 중앙 정렬 */
-  transform: translateX(-50%); /* 버튼을 가운데로 이동 */
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin: auto;
   z-index: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 744px) {
     width: 128px;
     height: 32px;
     bottom: 5px; /* 하단에서 5px 위로 */
@@ -62,7 +67,7 @@ const Title = styled.h2`
   font-weight: 500;
   margin: 10px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 744px) {
     font-size: 14px;
   }
 `;
@@ -72,7 +77,7 @@ const Subtitle = styled.h3`
   color: var(--gray-200);
   margin: 5px 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: 744px) {
     font-size: 12px;
   }
 `;

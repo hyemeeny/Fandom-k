@@ -9,7 +9,8 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Container = styled.div`
   position: relative;
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -23,6 +24,7 @@ const Container = styled.div`
   .slick-next {
     width: 40px;
     height: 78.33px;
+    transform: none;
   }
 
   .slick-prev {
@@ -33,25 +35,32 @@ const Container = styled.div`
     right: -70px;
   }
 
-  @media (min-width: 375px) {
-    width: 327px;
-    overflow: hidden;
-  }
-
-  @media (min-width: 768px) {
+  @media (max-width: 1200px) {
     width: 700px;
     overflow: hidden;
   }
 
-  @media (min-width: 1200px) {
-    width: 1200px;
-    overflow: visible;
+  @media (max-width: 744px) {
+    width: 327px;
+    overflow: hidden;
+  }
+`;
+
+const Title = styled.h2`
+  color: var(--white);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+
+  @media (max-width: 744px) {
+    font-size: 16px;
   }
 `;
 
 function DonationAwait() {
   const [donations, setDonations] = useState([]); // API에서 받아온 카드 목록
   const [loading, setLoading] = useState(false); // 로딩 상태 관리
+  const [currentIndex, setCurrentIndex] = useState(0); // 현재 슬라이드 인덱스 상태 추가
 
   useEffect(() => {
     const fetchInitialDonations = async () => {
@@ -102,35 +111,29 @@ function DonationAwait() {
     slidesToShow: 4,
     slidesToScroll: 1,
     arrows: true,
-    nextArrow: <RightArrowButton />,
-    prevArrow: <LeftArrowButton />,
+    nextArrow:
+      currentIndex < donations.length - 4 ? <RightArrowButton /> : null, // 조건부 렌더링
+    prevArrow: currentIndex > 0 ? <LeftArrowButton /> : null, // 조건부 렌더링
 
     afterChange: (current) => {
+      setCurrentIndex(current); // 현재 슬라이드 인덱스 업데이트
       if (current + 4 >= donations.length) {
         fetchMoreDonations();
       }
     },
-
     responsive: [
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: 3, // 3개의 슬라이드를 보여줌
-          slidesToScroll: 1, // 1개의 슬라이드를 스크롤함
+          slidesToShow: 2.5,
+          arrows: false,
         },
       },
       {
-        breakpoint: 768,
+        breakpoint: 744,
         settings: {
-          slidesToShow: 2, // 2개의 슬라이드를 보여줌
-          slidesToScroll: 1, // 1개의 슬라이드를 스크롤함
-        },
-      },
-      {
-        breakpoint: 375,
-        settings: {
-          slidesToShow: 1, // 1개의 슬라이드를 보여줌
-          slidesToScroll: 1, // 1개의 슬라이드를 스크롤함
+          slidesToShow: 2.05,
+          arrows: false,
         },
       },
     ],
@@ -139,21 +142,14 @@ function DonationAwait() {
   return (
     <div>
       <Container>
-        <h2
-          style={{
-            color: "var(--white)",
-            fontSize: "24px",
-            fontWeight: "700",
-            marginBottom: "24px",
-          }}
-        >
-          후원을 기다리는 조공
-        </h2>
-        <Slider {...settings}>
-          {donations.map((item) => (
-            <CardProfile key={item.id} item={item} />
-          ))}
-        </Slider>
+        <Title>후원을 기다리는 조공</Title>
+        {donations.length > 0 && (
+          <Slider {...settings}>
+            {donations.map((item) => (
+              <CardProfile key={item.id} item={item} />
+            ))}
+          </Slider>
+        )}
       </Container>
     </div>
   );
