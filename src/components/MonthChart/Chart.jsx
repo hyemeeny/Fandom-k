@@ -44,8 +44,8 @@ const Li = styled.li`
   @media (min-width: 1200px) {
     border-bottom: 1px solid var(--black-100);
 
-    &:nth-last-child(1),
-    &:nth-last-child(2) {
+    &:nth-last-of-type(1),
+    &:nth-last-of-type(2) {
       border-bottom: 0;
     }
   }
