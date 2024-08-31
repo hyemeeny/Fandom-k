@@ -146,6 +146,7 @@ const style = css`
     --gray-blue: #8c92ab;
     --gray-100: #a3a5a8;
     --white: #f7f7f8;
+    --white-darker: #f6f6f8;
     --coralpink: #f96d69;
     --hotpink: #fe5493;
   }
