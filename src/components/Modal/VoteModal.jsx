@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getCharts, postVotes } from "../../api/votesImageChart";
 import styled from "@emotion/styled/macro";
 import Avatar from "../Avatar";
@@ -8,34 +8,73 @@ import closedWindow from "../../assets/btn/close_window.svg";
 // import ArrowLeft from "../../assets/btn/icon/arrow_left.svg";
 
 const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
+  const target = useRef(null);
   const [idolList, setIdolList] = useState([]);
   const [selectedVote, setSelectedVote] = useState(null);
   const [myCredit, setMyCredit] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [nextCursor, setNextCursor] = useState(0);
+  const [genderValue, setGenderValue] = useState({
+    gender: activeTapValue.gender,
+    cursor: 0,
+  });
 
   // 크레딧 로컬스토리지
   useEffect(() => {
     localStorage.setItem("credit", JSON.stringify(1000));
     const credit = localStorage.getItem("credit");
     if (credit) {
-      setMyCredit(credit);
+      setMyCredit(Number(credit));
     } else {
       setMyCredit(0);
     }
-  }, [myCredit]);
+  }, []);
+
+  // 옵저버 콜백함수
+  const handleObserver = useCallback(
+    (entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && !isLoading && nextCursor !== null) {
+        handleLoadScroll();
+      }
+    },
+    [isLoading, nextCursor],
+  );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, {
+      threshold: 0.5,
+    });
+
+    if (target.current) observer.observe(target.current);
+    return () => observer.disconnect();
+  }, [handleObserver]);
+
+  // 무한 스크롤 아이돌 불러오기
+  const handleLoadScroll = async () => {
+    setGenderValue((prevValue) => ({
+      ...prevValue,
+      cursor: nextCursor,
+    }));
+  };
 
   // 아이돌 차트 조회
   useEffect(() => {
     const handleChartLoad = async () => {
-      const chart = await getCharts(activeTapValue);
-      if (chart) {
-        setIdolList(chart.idols);
-      } else {
-        console.error(chart.message);
-        return;
+      setIsLoading(true);
+      try {
+        const chart = await getCharts(genderValue);
+        if (chart) {
+          setIdolList((prevValue) => [...prevValue, ...chart.idols]);
+          setNextCursor(chart.nextCursor);
+        }
+      } catch (error) {
+        console.error(error);
       }
+      setIsLoading(false);
     };
     handleChartLoad();
-  }, [activeTapValue]);
+  }, [genderValue]);
 
   // 투표할 아이돌 선택
   const handleSelectVote = (vote) => {
@@ -65,7 +104,7 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
     <div>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalLabel>
-          {activeTapValue.gender === "female"
+          {genderValue.gender === "female"
             ? "이달의 여자 아이돌"
             : "이달의 남자 아이돌"}
         </ModalLabel>
@@ -74,6 +113,8 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
             {idolList &&
               idolList.map((item, index) => (
                 <VoteList
+                  // 마지막 아이템에만 ref를 설정하여 IntersectionObserver가 작동하게 한다.
+                  ref={index === idolList.length - 1 ? target : null}
                   key={item.id}
                   onClick={() => handleSelectVote(item.id)}
                 >
@@ -88,9 +129,7 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
                     <div>
                       <Group>{item.group}</Group>
                       <Name>{item.name}</Name>
-                      <TotalVotes>
-                        {item.totalVotes.toLocaleString("ko-KR")}표
-                      </TotalVotes>
+                      <TotalVotes>{item.totalVotes}표</TotalVotes>
                     </div>
                   </ProfileDiv>
                   <RadioButton
@@ -124,7 +163,7 @@ const VoteWrap = styled.div`
 const VoteBox = styled.ul`
   width: 100%;
   height: 514px;
-  overflow-y: scroll;
+  overflow-y: auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
