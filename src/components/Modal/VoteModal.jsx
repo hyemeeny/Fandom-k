@@ -7,7 +7,7 @@ import Avatar from "../Avatar";
 import RadioButton from "../RadioButton/RadioButton";
 import BoxButton from "../BoxButton";
 import closedWindow from "../../assets/btn/close_window.svg";
-// import ArrowLeft from "../../assets/btn/icon/arrow_left.svg";
+import ArrowLeft from "../../assets/icon/arrow_left.svg";
 
 const VoteModal = ({
   isOpen,
@@ -166,6 +166,10 @@ const VoteBox = styled.ul`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (max-width: 744px) {
+    height: 600px;
+  }
 `;
 
 const VoteList = styled.li`
@@ -234,15 +238,14 @@ const Modal = ({ isOpen, onClose, children }) => {
   return (
     <ModalOverlay onClick={onClose}>
       <motion.aside
+        style={{ width: "100%" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <ModalContent onClick={(e) => e.stopPropagation()}>
-          <ModalCloseButton onClick={onClose}>
-            <CloseWindow src={closedWindow} alt="Close" />
-          </ModalCloseButton>
+          <ModalCloseButton onClick={onClose} />
           {children}
         </ModalContent>
       </motion.aside>
@@ -270,6 +273,7 @@ const ModalContent = styled.div`
   border-radius: 12px;
   position: relative;
   width: 525px;
+  margin: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
   @media (max-width: 744px) {
@@ -287,6 +291,13 @@ const ModalCloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+  background: url(${closedWindow}) center center no-repeat;
+
+  @media (max-width: 744px) {
+    top: 25px;
+    left: 28px;
+    background: url(${ArrowLeft}) center center no-repeat;
+  }
 `;
 
 const ModalLabel = styled.h2`
@@ -294,9 +305,9 @@ const ModalLabel = styled.h2`
   font-weight: 500;
   text-align: left;
   padding-bottom: 24px;
-`;
 
-const CloseWindow = styled.img`
-  width: 24px;
-  height: 24px;
+  @media (max-width: 744px) {
+    font-size: 14px;
+    text-align: center;
+  }
 `;
