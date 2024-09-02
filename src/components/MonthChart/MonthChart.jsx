@@ -5,8 +5,12 @@ import Tabs from "./Tabs";
 import Chart from "./Chart";
 import VoteButton from "../BoxButton";
 import chartIcon from "../../assets/icon/chart.svg";
+import VoteModal from "../Modal/VoteModal";
 
 const MonthChart = () => {
+  // VoteModal 상태값
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const prevGenderRef = useRef("");
   const [activeTapValue, setActiveTabValue] = useState({
     gender: "female",
@@ -84,13 +88,25 @@ const MonthChart = () => {
     handleLoad();
   }, [activeTapValue]);
 
+  // VoteModal 클릭 핸들러
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
   return (
     <Section>
       <Header>
         <H2>이달의 차트</H2>
-        <VoteButton size={"small"} icon={chartIcon}>
+
+        <VoteButton size={"small"} icon={chartIcon} onClick={handleOpenModal}>
           차트 투표하기
         </VoteButton>
+        {isModalOpen && (
+          <VoteModal
+            activeTapValue={activeTapValue}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+          />
+        )}
       </Header>
       <Tabs activeTapValue={activeTapValue} onClick={activeTapValueHandler} />
       <Ul>

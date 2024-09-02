@@ -3,16 +3,14 @@ import { Link, Outlet } from "react-router-dom";
 import styled from "@emotion/styled";
 import LogoImg from "../assets/img/logo.svg";
 import UserImg from "../assets/img/userIcon.svg";
-import TopImg from "../assets/img/top_design.svg";
 
 const Header = () => {
   return (
     <>
       <HeaderStyle>
-        <TopStyle src={TopImg} />
         <Container>
           <LogoWrap>
-            <Link to="/list">
+            <Link to="/">
               <Logo src={LogoImg} alt="FAMDOM-K" />
             </Link>
           </LogoWrap>
@@ -40,13 +38,6 @@ const HeaderStyle = styled.header`
   @media (max-width: 744px) {
     height: 44px;
   }
-`;
-
-const TopStyle = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
 `;
 
 const Container = styled.div`
