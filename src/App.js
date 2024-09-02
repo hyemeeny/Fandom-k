@@ -3,6 +3,8 @@ import GlobalStyles from "./styles/global";
 import List from "./pages/List";
 import Header from "./components/Header";
 import Landing from "./pages/Landing";
+import MyPage from "./pages/MyPage";
+import { LeftArrowButton } from "./components/ArrowButton";
 
 function App() {
   return (
@@ -12,7 +14,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route element={<Header />}>
           <Route path="/list" element={<List />} />
-          <Route path="/mypage" />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Routes>
     </>

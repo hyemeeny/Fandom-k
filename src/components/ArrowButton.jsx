@@ -10,6 +10,7 @@ const Button = styled.button`
   padding: 0;
   cursor: pointer;
 
+  z-index: 9999;
   // 버튼이 이미지로 동작하도록 이미지 크기를 버튼 크기로 설정
   img {
     display: block;
@@ -32,17 +33,17 @@ const Button = styled.button`
   }
 `;
 
-export function LeftArrowButton() {
+export function LeftArrowButton({ className, onClick }) {
   return (
-    <Button type="button">
+    <Button type="button" onClick={onClick} className={className}>
       <img src={slideLeft} alt="왼쪽 슬라이드 버튼" />
     </Button>
   );
 }
 
-export function RightArrowButton() {
+export function RightArrowButton({ className, onClick }) {
   return (
-    <Button type="button">
+    <Button type="button" onClick={onClick} className={className}>
       <img src={slideRight} alt="오른쪽 슬라이드 버튼" />
     </Button>
   );
