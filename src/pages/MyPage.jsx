@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
-import FavoriteIdolList from "../components/FavoriteIdolList";
-import IdolList from "../components/IdolList";
+import FavoriteIdolList from "../components/Mypage/FavoriteIdolList";
+import IdolList from "../components/Mypage/IdolList";
 import { useIdols } from "../hooks/useIdols";
 
 export default function MyPage() {

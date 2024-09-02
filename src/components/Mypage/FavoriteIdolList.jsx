@@ -1,7 +1,8 @@
 import React from "react";
-import deleteIcon from "../assets/icon/delete_icon.svg";
+import deleteIcon from "../../assets/icon/delete_icon.svg";
 import styled from "@emotion/styled/macro";
-import Avatar from "./Avatar";
+import Avatar from "../Avatar";
+import { ProfileWrapper, Name, Group } from "./CommonStyle";
 
 export default function FavoriteIdolList({ idols, onDelete }) {
   return (
@@ -26,27 +27,6 @@ const FavoriteWrapper = styled.div`
   row-gap: 16px;
   gap: 16px;
   margin-top: 32px;
-`;
-
-const ProfileWrapper = styled.div`
-  width: 100%;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  z-index: 9999;
-`;
-
-const Name = styled.p`
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  padding: 8px;
-`;
-
-const Group = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  color: #ffffff99;
 `;
 
 const DeleteButton = styled.img`
