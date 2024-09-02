@@ -12,13 +12,13 @@ const MonthChart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const prevGenderRef = useRef("");
+  const [nextCursor, setNextCursor] = useState();
+  const [list, setList] = useState([]);
   const [activeTapValue, setActiveTabValue] = useState({
     gender: "female",
     cursor: 0,
     pageSize: window.innerWidth >= 1200 ? 10 : 5,
   });
-  const [nextCursor, setNextCursor] = useState();
-  const [list, setList] = useState([]);
 
   const activeTapValueHandler = (inputValue) => {
     setActiveTabValue({
@@ -64,7 +64,7 @@ const MonthChart = () => {
     const handleLoad = async () => {
       const result = await getCharts(activeTapValue);
 
-      if (!result.success) {
+      if (!result.idols) {
         console.error(result.message);
         return;
       }
@@ -129,14 +129,16 @@ const MonthChart = () => {
 
 const Section = styled.section`
   width: 327px;
-  margin: 0 auto;
+  margin: 30px auto;
   background-color: var(--black-200);
 
   @media (min-width: 768px) {
+    margin: 50px auto;
     width: 700px;
   }
 
   @media (min-width: 1200px) {
+    margin: 70px auto;
     width: 1200px;
   }
 `;
