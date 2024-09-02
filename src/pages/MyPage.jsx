@@ -3,39 +3,28 @@ import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
-import deleteIcon from "../assets/icon/delete_icon.svg";
 import { getIdols } from "../api/idols";
 import Avatar from "../components/Avatar";
+import FavoriteIdolList from "../components/FavoriteIdolList";
+import IdolList from "../components/IdolList";
 
 export default function MyPage() {
   const [favoriteIdols, setFavoriteIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
-
   const [pages, setPages] = useState([]); // 페이지별 데이터 저장
   const [currentPageIndex, setCurrentPageIndex] = useState(0); // 현재 페이지 인덱스
   const [cursor, setCursor] = useState(0);
 
-  const handleInitialLoad = async (cursor, pageSize) => {
-    let result;
-    try {
-      result = await getIdols(cursor, pageSize);
-      const { list, nextCursor } = result;
-      setPages([list]);
-      setCursor(nextCursor);
-      setCurrentPageIndex(0);
-    } catch (e) {
-      console.log(e);
-      return;
-    }
-  };
-
-  const handleLoadIdolsMore = async (cursor, pageSize) => {
+  const loadIdols = async (cursor, pageSize, isInitial = false) => {
     try {
       const result = await getIdols(cursor, pageSize);
       const { list, nextCursor } = result;
-      setPages((prevPages) => [...prevPages, list]);
-      setCursor(nextCursor);
-      setCurrentPageIndex((prevIndex) => prevIndex + 1);
+
+      setPages((prevPages) => {
+        return isInitial ? [list] : [...prevPages, list];
+      });
+      // 초기 로드시 현재 페이지 인덱스를 0으로 설정, 그 외에는 인덱스 증가
+      setCurrentPageIndex((prevIndex) => (isInitial ? 0 : prevIndex + 1));
     } catch (e) {
       console.log(e);
       return;
@@ -45,7 +34,7 @@ export default function MyPage() {
   useEffect(() => {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
     setFavoriteIdols([...new Set(storedIdols.map((idol) => idol))]);
-    handleInitialLoad(0, 16);
+    loadIdols(0, 16, true);
   }, []);
 
   function handleLeftClick() {
@@ -58,7 +47,7 @@ export default function MyPage() {
     if (cursor === null && currentPageIndex === pages.length - 1) return;
 
     if (currentPageIndex === pages.length - 1) {
-      handleLoadIdolsMore(cursor, 16);
+      loadIdols(cursor, 16);
     } else {
       setCurrentPageIndex((prevIndex) => prevIndex + 1);
     }
@@ -96,26 +85,12 @@ export default function MyPage() {
   const currentIdols = pages[currentPageIndex] || [];
 
   const isLoadDisabled = cursor === null;
-  // 저장된것 분기처리
+
   return (
     <Container>
       <AddedWrapper>
         <Title> 내가 관심있는 아이돌</Title>
-        <FavoriteWrapper>
-          {favoriteIdols.map((idol) => {
-            return (
-              <ProfileWrapper key={idol.id}>
-                <DeleteButton
-                  onClick={() => handleDelete(idol.id)}
-                  src={deleteIcon}
-                />
-                <Avatar imageUrl={idol.profilePicture} />
-                <Name>{idol.name}</Name>
-                <Group>{idol.group}</Group>
-              </ProfileWrapper>
-            );
-          })}
-        </FavoriteWrapper>
+        <FavoriteIdolList idols={favoriteIdols} onDelete={handleDelete} />
       </AddedWrapper>
       <Divider />
       <AddWrapper>
@@ -124,24 +99,12 @@ export default function MyPage() {
           <ArrowWarpper direction="left">
             <LeftArrowButton onClick={handleLeftClick} />
           </ArrowWarpper>
-          {currentIdols.map((idol) => {
-            const isSelected =
-              selectedIdols.includes(idol.id) &&
-              !favoriteIdols.includes(idol.id);
-            return (
-              <ProfileWrapper
-                key={idol.id}
-                onClick={() => handleSelect(idol.id)}
-              >
-                <Avatar
-                  imageUrl={idol.profilePicture}
-                  isSelected={isSelected}
-                />
-                <Name>{idol.name}</Name>
-                <Group>{idol.group}</Group>
-              </ProfileWrapper>
-            );
-          })}
+          <IdolList
+            currentIdols={currentIdols}
+            favoriteIdols={favoriteIdols}
+            selectedIdols={selectedIdols}
+            onSelect={handleSelect}
+          />
           <ArrowWarpper direction="right" isDisabled={isLoadDisabled}>
             <RightArrowButton onClick={handleRightClick} />
           </ArrowWarpper>
@@ -174,16 +137,6 @@ const Divider = styled.div`
   margin: 30px 0;
 `;
 
-const FavoriteWrapper = styled.div`
-  width: 1200px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: auto;
-  row-gap: 16px;
-  gap: 16px;
-  margin-top: 32px;
-`;
-
 const Container = styled.div`
   width: 1200px;
   margin: 0 auto;
@@ -214,37 +167,8 @@ const ArrowWarpper = styled.div`
   right: ${(props) => (props.direction === "right" ? "-5%" : "")};
 `;
 
-const ProfileWrapper = styled.div`
-  width: 100%;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  z-index: 9999;
-`;
-
-const Name = styled.p`
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  padding: 8px;
-`;
-
-const Group = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  color: #ffffff99;
-`;
-
 const BoxButtonWrapper = styled.div`
   margin-top: 48px;
   display: flex;
   justify-content: center;
-`;
-
-const DeleteButton = styled.img`
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  right: 3px;
-  z-index: 1;
 `;
