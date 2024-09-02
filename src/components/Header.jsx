@@ -35,6 +35,8 @@ const HeaderStyle = styled.header`
   top: 0;
   left: 0;
   background-color: var(--black-200);
+  z-index: 1000;
+
   @media (max-width: 744px) {
     height: 44px;
   }

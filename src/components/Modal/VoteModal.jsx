@@ -1,5 +1,7 @@
+import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getCharts, postVotes } from "../../api/votesImageChart";
+import { useCredit } from "../hooks/useLocalStorage";
 import styled from "@emotion/styled/macro";
 import Avatar from "../Avatar";
 import RadioButton from "../RadioButton/RadioButton";
@@ -7,11 +9,17 @@ import BoxButton from "../BoxButton";
 import closedWindow from "../../assets/btn/close_window.svg";
 // import ArrowLeft from "../../assets/btn/icon/arrow_left.svg";
 
-const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
+const VoteModal = ({
+  isOpen,
+  onClose,
+  activeTapValue,
+  setVoteCompleteModal,
+  setShowShortageModal,
+}) => {
   const target = useRef(null);
+  const [credit, setCredit] = useCredit();
   const [idolList, setIdolList] = useState([]);
   const [selectedVote, setSelectedVote] = useState(null);
-  const [myCredit, setMyCredit] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [nextCursor, setNextCursor] = useState(0);
   const [genderValue, setGenderValue] = useState({
@@ -19,23 +27,15 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
     cursor: 0,
   });
 
-  // 크레딧 로컬스토리지
-  useEffect(() => {
-    localStorage.setItem("credit", JSON.stringify(1000));
-    const credit = localStorage.getItem("credit");
-    if (credit) {
-      setMyCredit(Number(credit));
-    } else {
-      setMyCredit(0);
-    }
-  }, []);
-
   // 옵저버 콜백함수
   const handleObserver = useCallback(
     (entries) => {
       const target = entries[0];
       if (target.isIntersecting && !isLoading && nextCursor !== null) {
-        handleLoadScroll();
+        setGenderValue((prevValue) => ({
+          ...prevValue,
+          cursor: nextCursor,
+        }));
       }
     },
     [isLoading, nextCursor],
@@ -50,21 +50,13 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
     return () => observer.disconnect();
   }, [handleObserver]);
 
-  // 무한 스크롤 아이돌 불러오기
-  const handleLoadScroll = async () => {
-    setGenderValue((prevValue) => ({
-      ...prevValue,
-      cursor: nextCursor,
-    }));
-  };
-
   // 아이돌 차트 조회
   useEffect(() => {
     const handleChartLoad = async () => {
       setIsLoading(true);
       try {
         const chart = await getCharts(genderValue);
-        if (chart) {
+        if (chart.idols) {
           setIdolList((prevValue) => [...prevValue, ...chart.idols]);
           setNextCursor(chart.nextCursor);
         }
@@ -84,18 +76,19 @@ const VoteModal = ({ isOpen, onClose, activeTapValue }) => {
   // 투표하기 버튼 클릭
   const handleVoteLoad = async () => {
     if (selectedVote) {
-      const newCredit = Number(myCredit) - 1000;
-      if (newCredit >= 0) {
+      if (credit >= 1000) {
         await postVotes(selectedVote);
-        setMyCredit(newCredit);
-        const selectedIdol = idolList.find((idol) => idol.id === selectedVote);
-        alert(
-          `${selectedIdol.group} ${selectedIdol.name}에게 투표 되었습니다!🎉`,
-        );
+        const newCredit = Number(credit) - 1000;
+        setCredit(newCredit);
         onClose();
+        if (onClose) {
+          setVoteCompleteModal(true);
+        }
       } else {
-        alert("충전된 크레딧이 없습니다!😭");
         onClose();
+        if (onClose) {
+          setShowShortageModal(true);
+        }
       }
     }
   };
@@ -240,12 +233,19 @@ const Modal = ({ isOpen, onClose, children }) => {
 
   return (
     <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalCloseButton onClick={onClose}>
-          <CloseWindow src={closedWindow} alt="Close" />
-        </ModalCloseButton>
-        {children}
-      </ModalContent>
+      <motion.aside
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalCloseButton onClick={onClose}>
+            <CloseWindow src={closedWindow} alt="Close" />
+          </ModalCloseButton>
+          {children}
+        </ModalContent>
+      </motion.aside>
     </ModalOverlay>
   );
 };

@@ -6,10 +6,14 @@ import Chart from "./Chart";
 import VoteButton from "../BoxButton";
 import chartIcon from "../../assets/icon/chart.svg";
 import VoteModal from "../Modal/VoteModal";
+import CreditShortageModal from "../Modal/CreditShortageModal";
+import VoteCompleteModal from "../Modal/VoteCompleteModal";
 
 const MonthChart = () => {
   // VoteModal 상태값
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [voteCompleteModal, setVoteCompleteModal] = useState(false);
+  const [showShortageModal, setShowShortageModal] = useState(false);
 
   const prevGenderRef = useRef("");
   const [activeTapValue, setActiveTabValue] = useState({
@@ -97,16 +101,30 @@ const MonthChart = () => {
       <Header>
         <H2>이달의 차트</H2>
 
-        <VoteButton size={"small"} icon={chartIcon} onClick={handleOpenModal}>
-          차트 투표하기
-        </VoteButton>
         {isModalOpen && (
           <VoteModal
             activeTapValue={activeTapValue}
             isOpen={isModalOpen}
             onClose={handleCloseModal}
+            setVoteCompleteModal={setVoteCompleteModal}
+            setShowShortageModal={setShowShortageModal}
           />
         )}
+        {voteCompleteModal && (
+          <VoteCompleteModal
+            isOpen={voteCompleteModal}
+            onClose={() => setVoteCompleteModal(false)}
+          />
+        )}
+        {showShortageModal && (
+          <CreditShortageModal
+            isOpen={showShortageModal}
+            onClose={() => setShowShortageModal(false)}
+          />
+        )}
+        <VoteButton size={"small"} icon={chartIcon} onClick={handleOpenModal}>
+          차트 투표하기
+        </VoteButton>
       </Header>
       <Tabs activeTapValue={activeTapValue} onClick={activeTapValueHandler} />
       <Ul>
