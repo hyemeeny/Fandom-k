@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { usePageSize } from "./usePageSize";
+import { useState, useEffect } from "react";
 import { getIdols } from "../api/idols";
 
-export function useIdols(initialCursor, pageSize) {
+export function useIdols(initialCursor) {
+  const pageSize = usePageSize();
   const [pages, setPages] = useState([]); // 초기값을 빈 배열로 설정
   const [cursor, setCursor] = useState(initialCursor);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);

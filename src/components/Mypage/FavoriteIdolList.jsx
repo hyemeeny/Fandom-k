@@ -27,6 +27,16 @@ const FavoriteWrapper = styled.div`
   row-gap: 16px;
   gap: 16px;
   margin-top: 32px;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const DeleteButton = styled.img`

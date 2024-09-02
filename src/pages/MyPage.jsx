@@ -6,17 +6,19 @@ import addIcon from "../assets/icon/add_icon.svg";
 import FavoriteIdolList from "../components/Mypage/FavoriteIdolList";
 import IdolList from "../components/Mypage/IdolList";
 import { useIdols } from "../hooks/useIdols";
+import { usePageSize } from "../hooks/usePageSize";
 
 export default function MyPage() {
   const { pages, cursor, currentPageIndex, setCurrentPageIndex, loadIdols } =
-    useIdols(0, 16);
+    useIdols(0);
+  const pageSize = usePageSize();
   const [favoriteIdols, setFavoriteIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
 
   useEffect(() => {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
     setFavoriteIdols(storedIdols);
-    loadIdols(0, 16, true);
+    loadIdols(0, pageSize, true);
   }, []);
 
   function handleLeftClick() {
@@ -29,7 +31,7 @@ export default function MyPage() {
     if (currentPageIndex < pages.length - 1) {
       setCurrentPageIndex((prevIndex) => prevIndex + 1);
     } else if (cursor !== null) {
-      loadIdols(cursor, 16);
+      loadIdols(cursor, pageSize);
     }
   }
 
@@ -103,22 +105,65 @@ export default function MyPage() {
     </Container>
   );
 }
-const AddedWrapper = styled.section``;
+
+const AddedWrapper = styled.section`
+  width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+  }
+`;
 
 const AddWrapper = styled.section`
   width: 1200px;
   margin-top: 40px;
   margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const Divider = styled.div`
   width: 1200px;
   border-top: 1px solid var(--gray-300);
-  margin: 30px 0;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const Container = styled.div`
   width: 1200px;
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
   margin: 0 auto;
   align-items: center;
 `;
@@ -133,11 +178,21 @@ const Slide = styled.div`
   width: 1200px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: auto;
+  grid-template-rows: repeat(2, auto);
   position: relative;
   row-gap: 16px;
   gap: 16px;
   margin-top: 32px;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const ArrowWarpper = styled.div`
@@ -145,6 +200,16 @@ const ArrowWarpper = styled.div`
   top: 25%;
   left: ${(props) => (props.direction === "left" ? "-5%" : "")};
   right: ${(props) => (props.direction === "right" ? "-5%" : "")};
+
+  @media (max-width: 1024px) {
+    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
+    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+  }
+
+  @media (max-width: 768px) {
+    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
+    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+  }
 `;
 
 const BoxButtonWrapper = styled.div`
