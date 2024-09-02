@@ -81,6 +81,10 @@ const CreditValueWrapper = styled.div`
   }
 `;
 
+const CreditsWrapper = styled.div`
+  padding-bottom: 20px;
+`;
+
 function CreditRechargeModal({ isOpen, onClose }) {
   const [selectedCredit, setSelectedCredit] = useState(100);
   const [credit, setCredit] = useCredit();
@@ -95,15 +99,17 @@ function CreditRechargeModal({ isOpen, onClose }) {
     <div style={{ textAlign: "center" }}>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalLabel>크레딧 충전하기</ModalLabel>
-        {creditOptions.map((value) => (
-          <CreditOption
-            key={value}
-            value={value}
-            selectedCredit={selectedCredit}
-            onCreditChange={setSelectedCredit}
-          />
-        ))}
-        <div>선택된 금액: {selectedCredit} 크레딧</div>
+        <CreditsWrapper>
+          {creditOptions.map((value) => (
+            <CreditOption
+              key={value}
+              value={value}
+              selectedCredit={selectedCredit}
+              onCreditChange={setSelectedCredit}
+            />
+          ))}
+        </CreditsWrapper>
+
         <BoxButton size="modal" icon={icon} onClick={handleRecharge}>
           충전하기
         </BoxButton>
