@@ -1,11 +1,12 @@
 import styled from "@emotion/styled/macro";
 import creditIcon from "../assets/icon/credit_icon.svg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreditRechargeModal from "./Modal/CreditRechargeModal";
+import { useCredit } from "./hooks/useLocalStorage";
 
 const Credit = () => {
   const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
-  const [myCredit, setMyCredit] = useState();
+  const [value] = useCredit();
 
   const handleOpenRechargeModal = () => {
     setIsRechargeModalOpen(true);
@@ -15,16 +16,6 @@ const Credit = () => {
     setIsRechargeModalOpen(false);
   };
 
-  useEffect(() => {
-    const data = localStorage.getItem("credit");
-
-    if (data) {
-      setMyCredit(data);
-    } else {
-      setMyCredit(0);
-    }
-  }, []);
-
   return (
     <div>
       <CreditBoxDiv>
@@ -32,7 +23,7 @@ const Credit = () => {
           <HeadText>내 크레딧</HeadText>
           <IconCreditWrap>
             <img src={creditIcon} />
-            <CreditDiv>{myCredit}</CreditDiv>
+            <CreditDiv>{value}</CreditDiv>
           </IconCreditWrap>
         </CreditWrap>
         <ChargeButton onClick={handleOpenRechargeModal}>충전하기</ChargeButton>
