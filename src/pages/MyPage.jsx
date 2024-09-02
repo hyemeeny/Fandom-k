@@ -8,7 +8,7 @@ import { getIdols } from "../api/idols";
 import Avatar from "../components/Avatar";
 
 export default function MyPage() {
-  const [addedIdols, setAddedIdols] = useState([]); // 관심있는 아이돌
+  const [favoriteIdols, setFavoriteIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
 
   const [pages, setPages] = useState([]); // 페이지별 데이터 저장
@@ -43,8 +43,8 @@ export default function MyPage() {
   };
 
   useEffect(() => {
-    const storedIdols = JSON.parse(localStorage.getItem("addedIdols")) || [];
-    setAddedIdols([...new Set(storedIdols.map((idol) => idol))]);
+    const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
+    setFavoriteIdols([...new Set(storedIdols.map((idol) => idol))]);
     handleInitialLoad(0, 16);
   }, []);
 
@@ -55,6 +55,8 @@ export default function MyPage() {
   }
 
   function handleRightClick() {
+    if (cursor === null && currentPageIndex === pages.length - 1) return;
+
     if (currentPageIndex === pages.length - 1) {
       handleLoadIdolsMore(cursor, 16);
     } else {
@@ -71,23 +73,25 @@ export default function MyPage() {
   }
 
   function handleAdd() {
-    const newList = addedIdols.concat(selectedIdols);
-    setAddedIdols(newList);
+    const idolsToAdd = pages
+      .flat()
+      .filter((idol) => selectedIdols.includes(idol.id));
+
+    // 중복제거
+    const idolMap = new Map(favoriteIdols.map((idol) => [idol.id, idol]));
+    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol));
+    const newFavoriteIdols = Array.from(idolMap.values());
+
+    setFavoriteIdols(newFavoriteIdols);
     setSelectedIdols([]);
-    localStorage.setItem("addedIdols", JSON.stringify(newList));
+    localStorage.setItem("favoriteIdols", JSON.stringify(newFavoriteIdols));
   }
 
   function handleDelete(id) {
-    if (addedIdols.includes(id)) {
-      const newList = addedIdols.filter((item) => item !== id);
-      setAddedIdols(newList);
-      localStorage.setItem("addedIdols", JSON.stringify(newList));
-    }
+    const newList = favoriteIdols.filter((idol) => idol.id !== id);
+    setFavoriteIdols(newList);
+    localStorage.setItem("favoriteIdols", JSON.stringify(newList));
   }
-
-  const favoriteIdols = pages
-    .flat()
-    .filter((idol) => addedIdols.includes(idol.id));
 
   const currentIdols = pages[currentPageIndex] || [];
 
@@ -99,19 +103,17 @@ export default function MyPage() {
         <Title> 내가 관심있는 아이돌</Title>
         <FavoriteWrapper>
           {favoriteIdols.map((idol) => {
-            if (addedIdols.includes(idol.id)) {
-              return (
-                <ProfileWrapper key={idol.id}>
-                  <DeleteButton
-                    onClick={() => handleDelete(idol.id)}
-                    src={deleteIcon}
-                  />
-                  <Avatar imageUrl={idol.profilePicture} />
-                  <Name>{idol.name}</Name>
-                  <Group>{idol.group}</Group>
-                </ProfileWrapper>
-              );
-            }
+            return (
+              <ProfileWrapper key={idol.id}>
+                <DeleteButton
+                  onClick={() => handleDelete(idol.id)}
+                  src={deleteIcon}
+                />
+                <Avatar imageUrl={idol.profilePicture} />
+                <Name>{idol.name}</Name>
+                <Group>{idol.group}</Group>
+              </ProfileWrapper>
+            );
           })}
         </FavoriteWrapper>
       </AddedWrapper>
@@ -124,7 +126,8 @@ export default function MyPage() {
           </ArrowWarpper>
           {currentIdols.map((idol) => {
             const isSelected =
-              selectedIdols.includes(idol.id) && !addedIdols.includes(idol.id);
+              selectedIdols.includes(idol.id) &&
+              !favoriteIdols.includes(idol.id);
             return (
               <ProfileWrapper
                 key={idol.id}
