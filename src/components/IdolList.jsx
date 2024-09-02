@@ -3,14 +3,14 @@ import Avatar from "../components/Avatar";
 import styled from "@emotion/styled/macro";
 
 export default function IdolList({
-  currentIdols,
+  currentIdols = [], // 기본값을 빈 배열로 설정
   selectedIdols,
   favoriteIdols,
   onSelect,
 }) {
   return (
     <>
-      {currentIdols?.map((idol) => {
+      {currentIdols.map((idol) => {
         const isSelected =
           selectedIdols.includes(idol.id) && !favoriteIdols.includes(idol.id);
         return (

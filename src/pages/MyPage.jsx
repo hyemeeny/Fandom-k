@@ -3,37 +3,19 @@ import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
-import { getIdols } from "../api/idols";
-import Avatar from "../components/Avatar";
 import FavoriteIdolList from "../components/FavoriteIdolList";
 import IdolList from "../components/IdolList";
+import { useIdols } from "../hooks/useIdols";
 
 export default function MyPage() {
+  const { pages, cursor, currentPageIndex, setCurrentPageIndex, loadIdols } =
+    useIdols(0, 16);
   const [favoriteIdols, setFavoriteIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
-  const [pages, setPages] = useState([]); // 페이지별 데이터 저장
-  const [currentPageIndex, setCurrentPageIndex] = useState(0); // 현재 페이지 인덱스
-  const [cursor, setCursor] = useState(0);
-
-  const loadIdols = async (cursor, pageSize, isInitial = false) => {
-    try {
-      const result = await getIdols(cursor, pageSize);
-      const { list, nextCursor } = result;
-
-      setPages((prevPages) => {
-        return isInitial ? [list] : [...prevPages, list];
-      });
-      // 초기 로드시 현재 페이지 인덱스를 0으로 설정, 그 외에는 인덱스 증가
-      setCurrentPageIndex((prevIndex) => (isInitial ? 0 : prevIndex + 1));
-    } catch (e) {
-      console.log(e);
-      return;
-    }
-  };
 
   useEffect(() => {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
-    setFavoriteIdols([...new Set(storedIdols.map((idol) => idol))]);
+    setFavoriteIdols(storedIdols);
     loadIdols(0, 16, true);
   }, []);
 
@@ -44,12 +26,10 @@ export default function MyPage() {
   }
 
   function handleRightClick() {
-    if (cursor === null && currentPageIndex === pages.length - 1) return;
-
-    if (currentPageIndex === pages.length - 1) {
-      loadIdols(cursor, 16);
-    } else {
+    if (currentPageIndex < pages.length - 1) {
       setCurrentPageIndex((prevIndex) => prevIndex + 1);
+    } else if (cursor !== null) {
+      loadIdols(cursor, 16);
     }
   }
 
