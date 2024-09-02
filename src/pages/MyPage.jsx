@@ -12,32 +12,46 @@ const storedIds = JSON.parse(localStorage.getItem("addedIdols")) || [];
 export default function MyPage() {
   const [addedIdols, setAddedIdols] = useState(storedIds); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
-  const [idols, setIdols] = useState([]);
-  const [cursor, setCursor] = useState(0);
 
-  // size에 따라 다르게  Iodls 불러오기
-  // Left, Right Click 시 전환 (리액트 - 슬릭 사용 ?)
-  //
+  const [pages, setPages] = useState([]); // 페이지별 데이터 저장
+  const [currentPageIndex, setCurrentPageIndex] = useState(null); // 현재 페이지 인덱스
+  const [cursor, setCursor] = useState(null);
+
   const handleLoadIdols = async ({ option }) => {
     let result;
     try {
       result = await getIdols(option);
+      const { list, nextCursor } = result;
+      setPages((prevPages) => [...prevPages, list]);
+      setCursor(nextCursor);
+      if (currentPageIndex) {
+        setCurrentPageIndex((prevIndex) => prevIndex + 1);
+      } else {
+        setCurrentPageIndex(0);
+      }
     } catch (e) {
       console.log(e);
       return;
     }
-
-    const { list, nextCursor } = result;
-    setIdols(list);
-    setCursor(nextCursor);
   };
 
   useEffect(() => {
-    handleLoadIdols({ cursor, keyword: "", pageSize: 10 });
+    handleLoadIdols({ cursor: 0, pageSize: 10 });
   }, []);
 
-  function handlePrev() {}
-  function handleNext() {}
+  function handleLeftClick() {
+    if (currentPageIndex > 0) {
+      setCurrentPageIndex((prevIndex) => prevIndex - 1);
+    }
+  }
+
+  function handleRightClick() {
+    if (currentPageIndex === pages.length - 1) {
+      handleLoadIdols({ cursor });
+    } else {
+      setCurrentPageIndex((prevIndex) => prevIndex + 1);
+    }
+  }
 
   function handleSelect(id) {
     if (selectedIdols.includes(id)) {
@@ -56,20 +70,24 @@ export default function MyPage() {
 
   function handleDelete(id) {
     if (addedIdols.includes(id)) {
-      const newList = addedIdols.filter((idol) => idol !== id);
-      // setAddedIdols((prevList) => prevList.filter((item) => item !== id));
+      const newList = addedIdols.filter((item) => item !== id);
       setAddedIdols(newList);
       localStorage.setItem("addedIdols", JSON.stringify(newList));
     }
   }
 
+  const favoriteIdols = pages
+    .flat()
+    .filter((idol) => addedIdols.includes(idol.id));
+
+  const currentIdols = pages[currentPageIndex] || [];
   // 저장된것 분기처리
   return (
     <Container>
       <AddedWrapper>
         <Title> 내가 관심있는 아이돌</Title>
         <FavoriteWrapper>
-          {idols.map((idol) => {
+          {favoriteIdols.map((idol) => {
             if (addedIdols.includes(idol.id)) {
               return (
                 <ProfileWrapper key={idol.id}>
@@ -91,9 +109,9 @@ export default function MyPage() {
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
         <Slide>
           <ArrowWarpper direction="left">
-            <LeftArrowButton onClick={handlePrev} />
+            <LeftArrowButton onClick={handleLeftClick} />
           </ArrowWarpper>
-          {idols.map((idol) => {
+          {currentIdols.map((idol) => {
             const isSelected =
               selectedIdols.includes(idol.id) && !addedIdols.includes(idol.id);
             return (
@@ -111,7 +129,7 @@ export default function MyPage() {
             );
           })}
           <ArrowWarpper direction="right">
-            <RightArrowButton onClick={handleNext} />
+            <RightArrowButton onClick={handleRightClick} />
           </ArrowWarpper>
         </Slide>
         <BoxButtonWrapper>
@@ -128,7 +146,6 @@ export default function MyPage() {
     </Container>
   );
 }
-
 const AddedWrapper = styled.section``;
 
 const AddWrapper = styled.section`
