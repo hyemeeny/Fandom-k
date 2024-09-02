@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import BoxButton from "../BoxButton";
 import { ReactComponent as CoverDonation } from "../../assets/img/cover_donation.svg";
 import { ReactComponent as Credit } from "../../assets/img/credit.svg";
+import DonationModal from "../Modal/DonationModal";
 
 const CardWrapper = styled.div`
   width: 282px;
@@ -134,42 +135,55 @@ const ProgressBar = styled.div`
 `;
 
 function CardProfile({ item }) {
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
   const percentage = Math.min(
     (item.receivedDonations / item.targetDonation) * 100,
     100,
   ); // 진행률 계산
 
+  const openModal = () => setIsModalOpen(true); // 모달 열기
+  const closeModal = () => setIsModalOpen(false); // 모달 닫기
+
   return (
-    <CardWrapper key={item.id}>
-      <ImageWrapper>
-        <CardImage src={item.idol.profilePicture} alt={item.idol.name} />
-        <Overlay preserveAspectRatio="none" />
-        <StyledBoxButton size="medium">후원하기</StyledBoxButton>
-      </ImageWrapper>
-      <Content>
-        <Subtitle>{item.subtitle}</Subtitle>
-        <Title>{item.title}</Title>
-      </Content>
-      <Footer>
-        <DonationInfo>
-          <DonationDetails>
-            <CreditIcon width="12" height="12" />
-            <DonationAmount>
-              {item.receivedDonations.toLocaleString()}
-            </DonationAmount>
-          </DonationDetails>
-          <DaysLeft>
-            {Math.ceil(
-              (new Date(item.deadline) - new Date()) / (1000 * 60 * 60 * 24),
-            )}
-            일 남음
-          </DaysLeft>
-        </DonationInfo>
-        <ProgressBarContainer>
-          <ProgressBar percentage={percentage} />
-        </ProgressBarContainer>
-      </Footer>
-    </CardWrapper>
+    <>
+      <CardWrapper key={item.id}>
+        <ImageWrapper>
+          <CardImage src={item.idol.profilePicture} alt={item.idol.name} />
+          <Overlay preserveAspectRatio="none" />
+          <StyledBoxButton size="medium" onClick={openModal}>
+            후원하기
+          </StyledBoxButton>
+        </ImageWrapper>
+        <Content>
+          <Subtitle>{item.subtitle}</Subtitle>
+          <Title>{item.title}</Title>
+        </Content>
+        <Footer>
+          <DonationInfo>
+            <DonationDetails>
+              <CreditIcon width="12" height="12" />
+              <DonationAmount>
+                {item.receivedDonations.toLocaleString()}
+              </DonationAmount>
+            </DonationDetails>
+            <DaysLeft>
+              {Math.ceil(
+                (new Date(item.deadline) - new Date()) / (1000 * 60 * 60 * 24),
+              )}
+              일 남음
+            </DaysLeft>
+          </DonationInfo>
+          <ProgressBarContainer>
+            <ProgressBar percentage={percentage} />
+          </ProgressBarContainer>
+        </Footer>
+      </CardWrapper>
+      <DonationModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        selectedItem={item}
+      />
+    </>
   );
 }
 
