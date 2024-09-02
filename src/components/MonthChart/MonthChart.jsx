@@ -129,16 +129,14 @@ const MonthChart = () => {
 
 const Section = styled.section`
   width: 327px;
-  margin: 30px auto;
+  margin: 0px auto;
   background-color: var(--black-200);
 
   @media (min-width: 768px) {
-    margin: 50px auto;
     width: 700px;
   }
 
   @media (min-width: 1200px) {
-    margin: 70px auto;
     width: 1200px;
   }
 `;
