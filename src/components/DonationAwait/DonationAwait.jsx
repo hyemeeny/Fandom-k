@@ -35,6 +35,10 @@ const Container = styled.div`
     right: -70px;
   }
 
+  .slick-slide {
+    margin-bottom: 40px;
+  }
+
   @media (max-width: 1200px) {
     width: 700px;
     overflow: hidden;
