@@ -69,6 +69,12 @@ const Title = styled.h2`
 
   @media (max-width: 744px) {
     font-size: 14px;
+    height: 33.6px; // 두 줄까지 보이게 함
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2; // 두 줄까지 표시하고 나머지는 생략
   }
 `;
 
