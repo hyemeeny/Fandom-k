@@ -5,6 +5,7 @@ import RadioButton from "../RadioButton/RadioButton";
 import icon from "../../assets/icon/white_credit_icon.svg";
 import credit from "../../assets/img/credit.svg";
 import BoxButton from "../BoxButton";
+import { useCredit } from "../hooks/useLocalStorage";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -73,27 +74,43 @@ const CreditValueWrapper = styled.div`
   img {
     width: 20px;
   }
+  div {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+`;
+
+const CreditsWrapper = styled.div`
+  padding-bottom: 20px;
 `;
 
 function CreditRechargeModal({ isOpen, onClose }) {
   const [selectedCredit, setSelectedCredit] = useState(100);
+  const [credit, setCredit] = useCredit();
 
   const creditOptions = [100, 500, 1000, 2000, 9000000]; // 배열에 숫자를 넣으면 많은 값도 충전 가능
+  const handleRecharge = () => {
+    setCredit(credit + selectedCredit); // 선택된 크레딧 값을 현재 크레딧에 더하여 저장
+    onClose(); // 모달 닫기
+  };
 
   return (
     <div style={{ textAlign: "center" }}>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalLabel>크레딧 충전하기</ModalLabel>
-        {creditOptions.map((value) => (
-          <CreditOption
-            key={value}
-            value={value}
-            selectedCredit={selectedCredit}
-            onCreditChange={setSelectedCredit}
-          />
-        ))}
-        <div>선택된 금액: {selectedCredit} 크레딧</div>
-        <BoxButton size="modal" icon={icon}>
+        <CreditsWrapper>
+          {creditOptions.map((value) => (
+            <CreditOption
+              key={value}
+              value={value}
+              selectedCredit={selectedCredit}
+              onCreditChange={setSelectedCredit}
+            />
+          ))}
+        </CreditsWrapper>
+
+        <BoxButton size="modal" icon={icon} onClick={handleRecharge}>
           충전하기
         </BoxButton>
       </Modal>
@@ -121,7 +138,6 @@ const CreditOption = ({ value, selectedCredit, onCreditChange }) => (
     checked={selectedCredit === value}
     onClick={() => onCreditChange(value)}
   >
-    <img src={credit} alt="크레딧" />
     <RadioButton
       value={value}
       name="credit"
@@ -129,7 +145,10 @@ const CreditOption = ({ value, selectedCredit, onCreditChange }) => (
       checked={selectedCredit === value}
       onChange={() => onCreditChange(value)}
     >
-      {value}
+      <div>
+        <img src={credit} alt="크레딧" />
+        {value}
+      </div>
     </RadioButton>
   </CreditValueWrapper>
 );
