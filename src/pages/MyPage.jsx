@@ -13,8 +13,11 @@ export default function MyPage() {
   const [addedIdols, setAddedIdols] = useState(storedIds); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
   const [idols, setIdols] = useState([]);
-  const [cursor, setCursor] = useState(null);
+  const [cursor, setCursor] = useState(0);
 
+  // size에 따라 다르게  Iodls 불러오기
+  // Left, Right Click 시 전환 (리액트 - 슬릭 사용 ?)
+  //
   const handleLoadIdols = async ({ option }) => {
     let result;
     try {
@@ -30,16 +33,11 @@ export default function MyPage() {
   };
 
   useEffect(() => {
-    handleLoadIdols({ cursor: 0, keyword: "" });
+    handleLoadIdols({ cursor, keyword: "", pageSize: 10 });
   }, []);
 
-  function handleLeftClick() {
-    console.log("click");
-  }
-
-  function handleRightClick() {
-    console.log("click");
-  }
+  function handlePrev() {}
+  function handleNext() {}
 
   function handleSelect(id) {
     if (selectedIdols.includes(id)) {
@@ -52,11 +50,16 @@ export default function MyPage() {
   function handleAdd() {
     const newList = addedIdols.concat(selectedIdols);
     setAddedIdols(newList);
+    setSelectedIdols([]);
+    localStorage.setItem("addedIdols", JSON.stringify(newList));
   }
 
   function handleDelete(id) {
     if (addedIdols.includes(id)) {
-      setAddedIdols((prevList) => prevList.filter((item) => item !== id));
+      const newList = addedIdols.filter((idol) => idol !== id);
+      // setAddedIdols((prevList) => prevList.filter((item) => item !== id));
+      setAddedIdols(newList);
+      localStorage.setItem("addedIdols", JSON.stringify(newList));
     }
   }
 
@@ -88,7 +91,7 @@ export default function MyPage() {
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
         <Slide>
           <ArrowWarpper direction="left">
-            <LeftArrowButton onClick={handleLeftClick} />
+            <LeftArrowButton onClick={handlePrev} />
           </ArrowWarpper>
           {idols.map((idol) => {
             const isSelected =
@@ -108,7 +111,7 @@ export default function MyPage() {
             );
           })}
           <ArrowWarpper direction="right">
-            <RightArrowButton onClick={handleRightClick} />
+            <RightArrowButton onClick={handleNext} />
           </ArrowWarpper>
         </Slide>
         <BoxButtonWrapper>
