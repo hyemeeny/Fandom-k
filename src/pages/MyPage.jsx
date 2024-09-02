@@ -7,28 +7,35 @@ import deleteIcon from "../assets/icon/delete_icon.svg";
 import { getIdols } from "../api/idols";
 import Avatar from "../components/Avatar";
 
-const storedIds = JSON.parse(localStorage.getItem("addedIdols")) || [];
-
 export default function MyPage() {
-  const [addedIdols, setAddedIdols] = useState(storedIds); // 관심있는 아이돌
+  const [addedIdols, setAddedIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
 
   const [pages, setPages] = useState([]); // 페이지별 데이터 저장
-  const [currentPageIndex, setCurrentPageIndex] = useState(null); // 현재 페이지 인덱스
-  const [cursor, setCursor] = useState(null);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0); // 현재 페이지 인덱스
+  const [cursor, setCursor] = useState(0);
 
-  const handleLoadIdols = async ({ option }) => {
+  const handleInitialLoad = async (cursor, pageSize) => {
     let result;
     try {
-      result = await getIdols(option);
+      result = await getIdols(cursor, pageSize);
+      const { list, nextCursor } = result;
+      setPages([list]);
+      setCursor(nextCursor);
+      setCurrentPageIndex(0);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+  };
+
+  const handleLoadIdolsMore = async (cursor, pageSize) => {
+    try {
+      const result = await getIdols(cursor, pageSize);
       const { list, nextCursor } = result;
       setPages((prevPages) => [...prevPages, list]);
       setCursor(nextCursor);
-      if (currentPageIndex) {
-        setCurrentPageIndex((prevIndex) => prevIndex + 1);
-      } else {
-        setCurrentPageIndex(0);
-      }
+      setCurrentPageIndex((prevIndex) => prevIndex + 1);
     } catch (e) {
       console.log(e);
       return;
@@ -36,7 +43,9 @@ export default function MyPage() {
   };
 
   useEffect(() => {
-    handleLoadIdols({ cursor: 0, pageSize: 10 });
+    const storedIdols = JSON.parse(localStorage.getItem("addedIdols")) || [];
+    setAddedIdols([...new Set(storedIdols.map((idol) => idol))]);
+    handleInitialLoad(0, 16);
   }, []);
 
   function handleLeftClick() {
@@ -47,7 +56,7 @@ export default function MyPage() {
 
   function handleRightClick() {
     if (currentPageIndex === pages.length - 1) {
-      handleLoadIdols({ cursor });
+      handleLoadIdolsMore(cursor, 16);
     } else {
       setCurrentPageIndex((prevIndex) => prevIndex + 1);
     }
@@ -81,6 +90,8 @@ export default function MyPage() {
     .filter((idol) => addedIdols.includes(idol.id));
 
   const currentIdols = pages[currentPageIndex] || [];
+
+  const isLoadDisabled = cursor === null;
   // 저장된것 분기처리
   return (
     <Container>
@@ -128,7 +139,7 @@ export default function MyPage() {
               </ProfileWrapper>
             );
           })}
-          <ArrowWarpper direction="right">
+          <ArrowWarpper direction="right" isDisabled={isLoadDisabled}>
             <RightArrowButton onClick={handleRightClick} />
           </ArrowWarpper>
         </Slide>
