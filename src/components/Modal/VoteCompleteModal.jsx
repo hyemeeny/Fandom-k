@@ -57,7 +57,7 @@ const CreditShortageWarning = styled.div`
   padding-bottom: 20px;
 `;
 
-function CreditShortageModal({ isOpen, onClose }) {
+function VoteCompleteModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
@@ -65,9 +65,7 @@ function CreditShortageModal({ isOpen, onClose }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <CreditShortageWarning>
           <img src={credit} alt="크레딧아이콘" />
-          <p>
-            앗! 투표하기 위한 <span>크레딧</span>이 부족해요
-          </p>
+          <p>투표가 완료 되었습니다!</p>
         </CreditShortageWarning>
         <BoxButton size="modal" onClick={onClose}>
           확인
@@ -99,4 +97,4 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export default CreditShortageModal;
+export default VoteCompleteModal;

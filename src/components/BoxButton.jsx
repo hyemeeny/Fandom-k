@@ -45,7 +45,15 @@ const ButtonWrapper = styled.button`
   }
 `;
 
-function BoxButton({ size, children, icon, disabled, onClick, className, isRound }) {
+function BoxButton({
+  size = "medium",
+  children,
+  icon,
+  disabled,
+  onClick,
+  className,
+  isRound = false,
+}) {
   const getSize = () => {
     switch (size) {
       case "small":
@@ -87,11 +95,6 @@ BoxButton.propTypes = {
   disabled: PropTypes.bool, // 버튼 비활성화를 위한 속성
   onClick: PropTypes.func,
   isRound: PropTypes.bool,
-};
-
-BoxButton.defaultProps = {
-  size: "medium",
-  isRound: false,
 };
 
 export default BoxButton;
