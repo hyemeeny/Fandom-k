@@ -205,7 +205,7 @@ const Ul = styled.ul`
 
 const MoreView = styled.button`
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 70px;
   width: 326px;
   height: 42px;
   border-radius: 3px;
