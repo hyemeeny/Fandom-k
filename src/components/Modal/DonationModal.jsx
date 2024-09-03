@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import { createPortal } from "react-dom";
 import { ReactComponent as Credit } from "../../assets/icon/credit_icon.svg";
 import BoxButton from "../../components/BoxButton";
 import { toSponDonation } from "../../api/donations";
@@ -27,6 +28,7 @@ const ProfielWrap = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
 `;
 
 const ProfileImage = styled.img`
