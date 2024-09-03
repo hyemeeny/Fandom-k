@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import { createPortal } from "react-dom";
 import { ReactComponent as Credit } from "../../assets/icon/credit_icon.svg";
 import BoxButton from "../../components/BoxButton";
 import { ReactComponent as close } from "../../assets/btn/close_window.svg";
@@ -22,6 +23,7 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   position: fixed;
   top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--black-100);
   padding: 24px 16px 32px 16px;
@@ -31,13 +33,6 @@ const ModalContent = styled.div`
   color: var(--white);
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 1200px) {
-    right: 50%;
-  }
-
-  @media (max-width: 744px) {
-  }
 `;
 
 const ModalHeader = styled.div`
@@ -165,7 +160,7 @@ function DonationModal({ isOpen, onClose, selectedItem }) {
   if (!isOpen) return null;
 
   // 모달이 열려 있을 때 JSX 렌더링
-  return (
+  return createPortal(
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
@@ -202,7 +197,8 @@ function DonationModal({ isOpen, onClose, selectedItem }) {
           후원하기
         </StyledBoxButton>
       </ModalContent>
-    </ModalOverlay>
+    </ModalOverlay>,
+    document.body,
   );
 }
 
