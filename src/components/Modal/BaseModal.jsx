@@ -1,9 +1,7 @@
-import { motion } from "framer-motion";
-import React from "react";
 import styled from "@emotion/styled";
 import closedWindow from "../../assets/btn/close_window.svg";
-import credit from "../../assets/img/credit.svg";
-import BoxButton from "../BoxButton";
+import { motion } from "framer-motion";
+import { createPortal } from "react-dom";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -27,6 +25,7 @@ const ModalContent = styled.div`
   min-width: 300px;
   max-width: 500px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
 `;
 
 const ModalCloseButton = styled.button`
@@ -44,43 +43,10 @@ const CloseWindow = styled.img`
   height: 24px;
 `;
 
-const CreditShortageWarning = styled.div`
-  img {
-    width: 113px;
-  }
-  span {
-    color: var(--coralpink);
-  }
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 26px;
-  padding-bottom: 20px;
-`;
-
-function CreditShortageModal({ isOpen, onClose }) {
-  if (!isOpen) return null;
-
-  return (
-    <div style={{ textAlign: "center" }}>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <CreditShortageWarning>
-          <img src={credit} alt="크레딧아이콘" />
-          <p>
-            앗! 투표하기 위한 <span>크레딧</span>이 부족해요
-          </p>
-        </CreditShortageWarning>
-        <BoxButton size="modal" onClick={onClose}>
-          확인
-        </BoxButton>
-      </Modal>
-    </div>
-  );
-}
-
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <ModalOverlay onClick={onClose}>
       <motion.aside
         initial={{ opacity: 0 }}
@@ -95,8 +61,9 @@ const Modal = ({ isOpen, onClose, children }) => {
           {children}
         </ModalContent>
       </motion.aside>
-    </ModalOverlay>
+    </ModalOverlay>,
+    document.body,
   );
 };
 
-export default CreditShortageModal;
+export default Modal;

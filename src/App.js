@@ -4,7 +4,6 @@ import List from "./pages/List";
 import Header from "./components/Header";
 import Landing from "./pages/Landing";
 import MyPage from "./pages/MyPage";
-import { LeftArrowButton } from "./components/ArrowButton";
 
 function App() {
   return (
