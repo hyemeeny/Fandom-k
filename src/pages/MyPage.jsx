@@ -3,42 +3,36 @@ import React, { useState, useEffect } from "react";
 import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
-import deleteIcon from "../assets/icon/delete_icon.svg";
-import { getIdols } from "../api/idols";
-import Avatar from "../components/Avatar";
-
-const storedIds = JSON.parse(localStorage.getItem("addedIdols")) || [];
+import FavoriteIdolList from "../components/Mypage/FavoriteIdolList";
+import IdolList from "../components/Mypage/IdolList";
+import { useIdols } from "../hooks/useIdols";
+import { usePageSize } from "../hooks/usePageSize";
 
 export default function MyPage() {
-  const [addedIdols, setAddedIdols] = useState(storedIds); // 관심있는 아이돌
+  const { pages, cursor, currentPageIndex, setCurrentPageIndex, loadIdols } =
+    useIdols(0);
+  const pageSize = usePageSize();
+  const [favoriteIdols, setFavoriteIdols] = useState([]); // 관심있는 아이돌
   const [selectedIdols, setSelectedIdols] = useState([]); // 추가 전 선택된 아이돌
-  const [idols, setIdols] = useState([]);
-  const [cursor, setCursor] = useState(null);
-
-  const handleLoadIdols = async ({ option }) => {
-    let result;
-    try {
-      result = await getIdols(option);
-    } catch (e) {
-      console.log(e);
-      return;
-    }
-
-    const { list, nextCursor } = result;
-    setIdols(list);
-    setCursor(nextCursor);
-  };
 
   useEffect(() => {
-    handleLoadIdols({ cursor: 0, keyword: "" });
+    const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
+    setFavoriteIdols(storedIdols);
+    loadIdols(0, pageSize, true);
   }, []);
 
   function handleLeftClick() {
-    console.log("click");
+    if (currentPageIndex > 0) {
+      setCurrentPageIndex((prevIndex) => prevIndex - 1);
+    }
   }
 
   function handleRightClick() {
-    console.log("click");
+    if (currentPageIndex < pages.length - 1) {
+      setCurrentPageIndex((prevIndex) => prevIndex + 1);
+    } else if (cursor !== null) {
+      loadIdols(cursor, pageSize);
+    }
   }
 
   function handleSelect(id) {
@@ -50,38 +44,35 @@ export default function MyPage() {
   }
 
   function handleAdd() {
-    const newList = addedIdols.concat(selectedIdols);
-    setAddedIdols(newList);
+    const idolsToAdd = pages
+      .flat()
+      .filter((idol) => selectedIdols.includes(idol.id));
+
+    // 중복제거
+    const idolMap = new Map(favoriteIdols.map((idol) => [idol.id, idol]));
+    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol));
+    const newFavoriteIdols = Array.from(idolMap.values());
+
+    setFavoriteIdols(newFavoriteIdols);
+    setSelectedIdols([]);
+    localStorage.setItem("favoriteIdols", JSON.stringify(newFavoriteIdols));
   }
 
   function handleDelete(id) {
-    if (addedIdols.includes(id)) {
-      setAddedIdols((prevList) => prevList.filter((item) => item !== id));
-    }
+    const newList = favoriteIdols.filter((idol) => idol.id !== id);
+    setFavoriteIdols(newList);
+    localStorage.setItem("favoriteIdols", JSON.stringify(newList));
   }
 
-  // 저장된것 분기처리
+  const currentIdols = pages[currentPageIndex] || [];
+
+  const isLoadDisabled = cursor === null;
+
   return (
     <Container>
       <AddedWrapper>
         <Title> 내가 관심있는 아이돌</Title>
-        <FavoriteWrapper>
-          {idols.map((idol) => {
-            if (addedIdols.includes(idol.id)) {
-              return (
-                <ProfileWrapper key={idol.id}>
-                  <DeleteButton
-                    onClick={() => handleDelete(idol.id)}
-                    src={deleteIcon}
-                  />
-                  <Avatar imageUrl={idol.profilePicture} />
-                  <Name>{idol.name}</Name>
-                  <Group>{idol.group}</Group>
-                </ProfileWrapper>
-              );
-            }
-          })}
-        </FavoriteWrapper>
+        <FavoriteIdolList idols={favoriteIdols} onDelete={handleDelete} />
       </AddedWrapper>
       <Divider />
       <AddWrapper>
@@ -90,24 +81,13 @@ export default function MyPage() {
           <ArrowWarpper direction="left">
             <LeftArrowButton onClick={handleLeftClick} />
           </ArrowWarpper>
-          {idols.map((idol) => {
-            const isSelected =
-              selectedIdols.includes(idol.id) && !addedIdols.includes(idol.id);
-            return (
-              <ProfileWrapper
-                key={idol.id}
-                onClick={() => handleSelect(idol.id)}
-              >
-                <Avatar
-                  imageUrl={idol.profilePicture}
-                  isSelected={isSelected}
-                />
-                <Name>{idol.name}</Name>
-                <Group>{idol.group}</Group>
-              </ProfileWrapper>
-            );
-          })}
-          <ArrowWarpper direction="right">
+          <IdolList
+            currentIdols={currentIdols}
+            favoriteIdols={favoriteIdols}
+            selectedIdols={selectedIdols}
+            onSelect={handleSelect}
+          />
+          <ArrowWarpper direction="right" isDisabled={isLoadDisabled}>
             <RightArrowButton onClick={handleRightClick} />
           </ArrowWarpper>
         </Slide>
@@ -126,32 +106,64 @@ export default function MyPage() {
   );
 }
 
-const AddedWrapper = styled.section``;
+const AddedWrapper = styled.section`
+  width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+  }
+`;
 
 const AddWrapper = styled.section`
   width: 1200px;
   margin-top: 40px;
   margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const Divider = styled.div`
   width: 1200px;
   border-top: 1px solid var(--gray-300);
-  margin: 30px 0;
-`;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
 
-const FavoriteWrapper = styled.div`
-  width: 1200px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: auto;
-  row-gap: 16px;
-  gap: 16px;
-  margin-top: 32px;
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const Container = styled.div`
   width: 1200px;
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
   margin: 0 auto;
   align-items: center;
 `;
@@ -166,11 +178,21 @@ const Slide = styled.div`
   width: 1200px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: auto;
+  grid-template-rows: repeat(2, auto);
   position: relative;
   row-gap: 16px;
   gap: 16px;
   margin-top: 32px;
+
+  @media (max-width: 1024px) {
+    width: 524px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    width: 328px;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const ArrowWarpper = styled.div`
@@ -178,39 +200,20 @@ const ArrowWarpper = styled.div`
   top: 25%;
   left: ${(props) => (props.direction === "left" ? "-5%" : "")};
   right: ${(props) => (props.direction === "right" ? "-5%" : "")};
-`;
 
-const ProfileWrapper = styled.div`
-  width: 100%;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  z-index: 9999;
-`;
+  @media (max-width: 1024px) {
+    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
+    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+  }
 
-const Name = styled.p`
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
-  padding: 8px;
-`;
-
-const Group = styled.p`
-  font-size: 14px;
-  font-weight: 400;
-  color: #ffffff99;
+  @media (max-width: 768px) {
+    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
+    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+  }
 `;
 
 const BoxButtonWrapper = styled.div`
   margin-top: 48px;
   display: flex;
   justify-content: center;
-`;
-
-const DeleteButton = styled.img`
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  right: 3px;
-  z-index: 1;
 `;
