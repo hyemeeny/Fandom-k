@@ -1,12 +1,11 @@
 import styled from "@emotion/styled/macro";
 import React, { useState, useEffect } from "react";
-import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
 import FavoriteIdolList from "../components/Mypage/FavoriteIdolList";
-import IdolList from "../components/Mypage/IdolList";
 import { useIdols } from "../hooks/useIdols";
 import { usePageSize } from "../hooks/usePageSize";
+import IdolSlide from "../components/Mypage/IdolSlide";
 
 export default function MyPage() {
   const { pages, cursor, currentPageIndex, setCurrentPageIndex, loadIdols } =
@@ -19,6 +18,14 @@ export default function MyPage() {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
     setFavoriteIdols(storedIdols);
     loadIdols(0, pageSize, true);
+  }, [pageSize]);
+
+  // 스크롤 삭제
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, []);
 
   function handleLeftClick() {
@@ -36,6 +43,10 @@ export default function MyPage() {
   }
 
   function handleSelect(id) {
+    if (favoriteIdols.some((idol) => idol.id === id)) {
+      return;
+    }
+
     if (selectedIdols.includes(id)) {
       setSelectedIdols((prevList) => prevList.filter((item) => item !== id));
       return;
@@ -77,20 +88,16 @@ export default function MyPage() {
       <Divider />
       <AddWrapper>
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
-        <Slide>
-          <ArrowWarpper direction="left">
-            <LeftArrowButton onClick={handleLeftClick} />
-          </ArrowWarpper>
-          <IdolList
-            currentIdols={currentIdols}
-            favoriteIdols={favoriteIdols}
-            selectedIdols={selectedIdols}
-            onSelect={handleSelect}
-          />
-          <ArrowWarpper direction="right" isDisabled={isLoadDisabled}>
-            <RightArrowButton onClick={handleRightClick} />
-          </ArrowWarpper>
-        </Slide>
+        <IdolSlide
+          currentIdols={currentIdols}
+          favoriteIdols={favoriteIdols}
+          selectedIdols={selectedIdols}
+          currentPageIndex={currentPageIndex}
+          onSelect={handleSelect}
+          onLeftClick={handleLeftClick}
+          onRightClick={handleRightClick}
+          isDisabled={isLoadDisabled}
+        />
         <BoxButtonWrapper>
           <BoxButton
             size="medium"
@@ -109,6 +116,7 @@ export default function MyPage() {
 const AddedWrapper = styled.section`
   width: 1200px;
   margin: 0 auto;
+  margin-top: 30px;
 
   @media (max-width: 1024px) {
     width: 524px;
@@ -155,6 +163,9 @@ const Divider = styled.div`
 
 const Container = styled.div`
   width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+
   @media (max-width: 1024px) {
     width: 524px;
     grid-template-columns: repeat(4, 1fr);
@@ -164,51 +175,19 @@ const Container = styled.div`
     width: 328px;
     grid-template-columns: repeat(3, 1fr);
   }
-  margin: 0 auto;
-  align-items: center;
 `;
 
 const Title = styled.h2`
   font-size: 26px;
   font-weight: 700;
   color: var(--white-darker);
-`;
-
-const Slide = styled.div`
-  width: 1200px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(2, auto);
-  position: relative;
-  row-gap: 16px;
-  gap: 16px;
-  margin-top: 32px;
 
   @media (max-width: 1024px) {
-    width: 524px;
-    grid-template-columns: repeat(4, 1fr);
+    font-size: 20px;
   }
 
   @media (max-width: 768px) {
-    width: 328px;
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const ArrowWarpper = styled.div`
-  position: absolute;
-  top: 25%;
-  left: ${(props) => (props.direction === "left" ? "-5%" : "")};
-  right: ${(props) => (props.direction === "right" ? "-5%" : "")};
-
-  @media (max-width: 1024px) {
-    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
-    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
-  }
-
-  @media (max-width: 768px) {
-    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
-    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+    font-size: 16px;
   }
 `;
 

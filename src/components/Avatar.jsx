@@ -16,6 +16,7 @@ const AvatarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: ${(props) => (props.isFavorite ? "default" : "pointer")};
 `;
 
 const AvatarImage = styled.img`
@@ -38,15 +39,17 @@ const GradientOverlay = styled.div`
   width: 92%;
   height: 92%;
   border-radius: 50%;
-  background: linear-gradient(
-    45deg,
-    rgba(249, 109, 105, 0.5),
-    /* coralpink */ rgba(254, 84, 147, 0.5) /* hotpink */
-  );
-  opacity: ${(props) => (props.isSelected ? 0.5 : 0)};
+  background: ${(props) =>
+    props.isFavorite
+      ? "rgba(0, 0, 0, 1)" // 회색 오버레이
+      : props.isSelected
+      ? "linear-gradient(45deg, rgba(249, 109, 105, 0.5), rgba(254, 84, 147, 0.5))" // coralpink -> hotpink
+      : "transparent"};
+  opacity: ${(props) => (props.isSelected || props.isFavorite ? 0.5 : 0)};
   pointer-events: none;
   z-index: 2;
 `;
+
 const SelectedImage = styled.img`
   width: 50%;
   position: absolute;
@@ -56,17 +59,17 @@ const SelectedImage = styled.img`
   z-index: 2;
 `;
 
-function Avatar({ imageUrl, isSelected }) {
+function Avatar({ imageUrl, isSelected, isFavorite }) {
   const displayImageUrl =
     imageUrl === "https://example.com/profile.jpg" ? emptyicon : imageUrl;
 
   return (
-    <AvatarWrapper>
-      <AvatarImage src={displayImageUrl} alt="Avatar" isSelected={isSelected} />
-      {isSelected && (
+    <AvatarWrapper isFavorite={isFavorite}>
+      <AvatarImage src={displayImageUrl} alt="Avatar" />
+      {(isSelected || isFavorite) && (
         <>
-          <GradientOverlay isSelected={isSelected} />
-          <SelectedImage src={checkIcon} alt="Selected Icon" />
+          <GradientOverlay isSelected={isSelected} isFavorite={isFavorite} />
+          {isSelected && <SelectedImage src={checkIcon} alt="Selected Icon" />}
         </>
       )}
     </AvatarWrapper>
@@ -75,6 +78,13 @@ function Avatar({ imageUrl, isSelected }) {
 
 Avatar.propTypes = {
   imageUrl: PropTypes.string.isRequired, // 이미지 URL을 문자열로 받습니다.
+  isSelected: PropTypes.bool.isRequired,
+  isFavorite: PropTypes.bool.isRequired,
+};
+
+Avatar.defaultProps = {
+  isSelected: false,
+  isFavorite: false,
 };
 
 export default Avatar;

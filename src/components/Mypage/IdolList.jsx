@@ -11,11 +11,18 @@ export default function IdolList({
   return (
     <>
       {currentIdols.map((idol) => {
-        const isSelected =
-          selectedIdols.includes(idol.id) && !favoriteIdols.includes(idol.id);
+        const isSelected = selectedIdols.includes(idol.id);
+        const isFavorite = favoriteIdols.some(
+          (favIdol) => favIdol.id === idol.id,
+        );
+
         return (
           <ProfileWrapper key={idol.id} onClick={() => onSelect(idol.id)}>
-            <Avatar imageUrl={idol.profilePicture} isSelected={isSelected} />
+            <Avatar
+              imageUrl={idol.profilePicture}
+              isSelected={isSelected}
+              isFavorite={isFavorite}
+            />
             <Name>{idol.name}</Name>
             <Group>{idol.group}</Group>
           </ProfileWrapper>

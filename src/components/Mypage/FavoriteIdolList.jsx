@@ -23,7 +23,6 @@ const FavoriteWrapper = styled.div`
   width: 1200px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: auto;
   row-gap: 16px;
   gap: 16px;
   margin-top: 32px;
