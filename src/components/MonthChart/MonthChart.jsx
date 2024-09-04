@@ -6,8 +6,8 @@ import Chart from "./Chart";
 import VoteButton from "../BoxButton";
 import chartIcon from "../../assets/icon/chart.svg";
 import VoteModal from "../Modal/VoteModal";
-import CreditShortageModal from "../Modal/CreditShortageModal";
-import VoteCompleteModal from "../Modal/VoteCompleteModal";
+
+import { ToastModal } from "../Modal/ToastModal";
 
 const MonthChart = () => {
   // VoteModal 상태값
@@ -111,16 +111,20 @@ const MonthChart = () => {
           />
         )}
         {voteCompleteModal && (
-          <VoteCompleteModal
+          <ToastModal
             isOpen={voteCompleteModal}
             onClose={() => setVoteCompleteModal(false)}
-          />
+          >
+            투표가 완료되었습니다!
+          </ToastModal>
         )}
         {showShortageModal && (
-          <CreditShortageModal
+          <ToastModal
             isOpen={showShortageModal}
             onClose={() => setShowShortageModal(false)}
-          />
+          >
+            앗! 투표하기 위한 <span>크레딧</span>이 부족해요!
+          </ToastModal>
         )}
         <VoteButton size={"small"} icon={chartIcon} onClick={handleOpenModal}>
           차트 투표하기

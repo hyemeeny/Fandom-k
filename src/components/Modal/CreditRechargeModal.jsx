@@ -1,45 +1,11 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import closedWindow from "../../assets/btn/close_window.svg";
 import RadioButton from "../RadioButton/RadioButton";
 import icon from "../../assets/icon/white_credit_icon.svg";
 import credit from "../../assets/img/credit.svg";
 import BoxButton from "../BoxButton";
-import { useCredit } from "../hooks/useLocalStorage";
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  color: #f7f7f8;
-  background-color: #181d26;
-  padding: 20px;
-  border-radius: 8px;
-  position: relative;
-  min-width: 300px;
-  max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-`;
-
-const ModalCloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-`;
+import { useCredit } from "../../hooks/useLocalStorage";
+import Modal from "./BaseModal";
 
 const ModalLabel = styled.h2`
   font-size: 18px;
@@ -47,11 +13,6 @@ const ModalLabel = styled.h2`
   line-height: 21.48px;
   text-align: left;
   padding-bottom: 24px;
-`;
-
-const CloseWindow = styled.img`
-  width: 24px;
-  height: 24px;
 `;
 
 const CreditValueWrapper = styled.div`
@@ -117,21 +78,6 @@ function CreditRechargeModal({ isOpen, onClose }) {
     </div>
   );
 }
-
-const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
-  return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalCloseButton onClick={onClose}>
-          <CloseWindow src={closedWindow} alt="Close" />
-        </ModalCloseButton>
-        {children}
-      </ModalContent>
-    </ModalOverlay>
-  );
-};
 
 const CreditOption = ({ value, selectedCredit, onCreditChange }) => (
   <CreditValueWrapper

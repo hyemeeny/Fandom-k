@@ -89,6 +89,10 @@ function DonationAwait() {
     };
 
     fetchInitialDonations();
+
+    const intervalId = setInterval(fetchInitialDonations, 10000); // 10초마다 데이터 갱신
+
+    return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 클리어
   }, []);
 
   const fetchMoreDonations = async () => {

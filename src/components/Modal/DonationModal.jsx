@@ -3,58 +3,37 @@ import styled from "@emotion/styled";
 import { createPortal } from "react-dom";
 import { ReactComponent as Credit } from "../../assets/icon/credit_icon.svg";
 import BoxButton from "../../components/BoxButton";
-import { ReactComponent as close } from "../../assets/btn/close_window.svg";
 import { toSponDonation } from "../../api/donations";
-import { useCredit } from "../hooks/useLocalStorage";
+import { useCredit } from "../../hooks/useLocalStorage";
+import Modal from "./BaseModal";
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+const ModalLabel = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 21.48px;
+  text-align: left;
+  padding-bottom: 24px;
 `;
 
-const ModalContent = styled.div`
-  position: fixed;
+const Profile = styled.div`
+  position: relative;
+  margin: 0 auto;
+  height: 230px;
+`;
+const ProfielWrap = styled.div`
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--black-100);
-  padding: 24px 16px 32px 16px;
-  border-radius: 8px;
-  max-width: 327px;
-  width: 100%;
-  color: var(--white);
   display: flex;
   flex-direction: column;
-`;
+  justify-content: center;
 
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 18px;
-  margin: 0;
-`;
-
-const CloseButton = styled(close)``;
-
-const Profile = styled.div`
-  margin: auto;
 `;
 
 const ProfileImage = styled.img`
   width: 158px;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
 `;
 
@@ -62,7 +41,6 @@ const Subtitle = styled.h3`
   font-size: 12px;
   color: var(--gray-200);
   text-align: left;
-  width: 100%;
   margin: 12px 0 10px 0;
 `;
 
@@ -70,7 +48,6 @@ const Title = styled.h2`
   font-size: 14px;
   margin-bottom: 16px;
   text-align: left;
-  width: 100%;
 `;
 
 const InputWrapper = styled.div`
@@ -117,7 +94,7 @@ const ErrorMessage = styled.div`
   text-align: center;
 `;
 
-function DonationModal({ isOpen, onClose, selectedItem }) {
+function DonationModal({ isOpen, onClose, selectedItem, setIsToastMoalOpen }) {
   const [credit, setCredit] = useCredit(0);
   const [inputCredit, setInputCredit] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -147,8 +124,8 @@ function DonationModal({ isOpen, onClose, selectedItem }) {
         setCredit((prevCredit) => prevCredit - donationAmount);
         setInputCredit("");
         onClose();
-        alert("후원이 완료되었습니다!");
-        window.location.reload(); // 페이지 강제 새로고침
+        setIsToastMoalOpen(true);
+        // window.location.reload(); // 페이지 강제 새로고침
       } catch (error) {
         console.error("후원 중 오류가 발생했습니다:", error);
         alert("후원 중 문제가 발생했습니다. 다시 시도해 주세요.");
@@ -160,45 +137,41 @@ function DonationModal({ isOpen, onClose, selectedItem }) {
   if (!isOpen) return null;
 
   // 모달이 열려 있을 때 JSX 렌더링
-  return createPortal(
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <ModalTitle>후원하기</ModalTitle>
-          <CloseButton onClick={onClose} />
-        </ModalHeader>
-        <Profile>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalLabel>후원하기</ModalLabel>
+      <Profile>
+        <ProfielWrap>
           <ProfileImage
             src={selectedItem.idol.profilePicture}
             alt={selectedItem.idol.name}
           />
           <Subtitle>{selectedItem.subtitle}</Subtitle>
           <Title>{selectedItem.title}</Title>
-        </Profile>
-        <InputWrapper>
-          <Input
-            type="number"
-            placeholder="크레딧 입력"
-            value={inputCredit}
-            onChange={(e) => setInputCredit(e.target.value)}
-            min="0"
-            isInvalid={isInvalid}
-          />
-          <IconWrapper>
-            <Credit />
-          </IconWrapper>
-          {isInvalid && (
-            <ErrorMessage>
-              갖고 있는 크레딧보다 더 많이 후원할 수 없어요
-            </ErrorMessage>
-          )}
-        </InputWrapper>
-        <StyledBoxButton onClick={handleDonate} disabled={isButtonDisabled}>
-          후원하기
-        </StyledBoxButton>
-      </ModalContent>
-    </ModalOverlay>,
-    document.body,
+        </ProfielWrap>
+      </Profile>
+      <InputWrapper>
+        <Input
+          type="number"
+          placeholder="크레딧 입력"
+          value={inputCredit}
+          onChange={(e) => setInputCredit(e.target.value)}
+          min="0"
+          isInvalid={isInvalid}
+        />
+        <IconWrapper>
+          <Credit />
+        </IconWrapper>
+        {isInvalid && (
+          <ErrorMessage>
+            갖고 있는 크레딧보다 더 많이 후원할 수 없어요
+          </ErrorMessage>
+        )}
+      </InputWrapper>
+      <StyledBoxButton onClick={handleDonate} disabled={isButtonDisabled}>
+        후원하기
+      </StyledBoxButton>
+    </Modal>
   );
 }
 

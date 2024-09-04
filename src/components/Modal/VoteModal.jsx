@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getCharts, postVotes } from "../../api/votesImageChart";
-import { useCredit } from "../hooks/useLocalStorage";
+import { useCredit } from "../../hooks/useLocalStorage";
 import styled from "@emotion/styled/macro";
 import Avatar from "../Avatar";
 import RadioButton from "../RadioButton/RadioButton";
