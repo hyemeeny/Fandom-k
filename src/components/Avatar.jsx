@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
+import emptyicon from "../assets/icon/empty_icon.png";
 
 import checkIcon from "../assets/icon/check_icon.svg";
 
@@ -56,9 +57,12 @@ const SelectedImage = styled.img`
 `;
 
 function Avatar({ imageUrl, isSelected }) {
+  const displayImageUrl =
+    imageUrl === "https://example.com/profile.jpg" ? emptyicon : imageUrl;
+
   return (
     <AvatarWrapper>
-      <AvatarImage src={imageUrl} alt="Avatar" isSelected={isSelected} />
+      <AvatarImage src={displayImageUrl} alt="Avatar" isSelected={isSelected} />
       {isSelected && (
         <>
           <GradientOverlay isSelected={isSelected} />
