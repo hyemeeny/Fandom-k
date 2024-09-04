@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SelectedButtonImg from "../../assets/btn/selected_button.svg";
 import UnSelectedButtonImg from "../../assets/btn/unselected_button.svg";
 import styled from "@emotion/styled";
@@ -10,7 +10,6 @@ const RadioWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  width: 300px;
   :hover {
     cursor: pointer;
   }

@@ -5,16 +5,24 @@ import Tabs from "./Tabs";
 import Chart from "./Chart";
 import VoteButton from "../BoxButton";
 import chartIcon from "../../assets/icon/chart.svg";
+import VoteModal from "../Modal/VoteModal";
+
+import { ToastModal } from "../Modal/ToastModal";
 
 const MonthChart = () => {
+  // VoteModal 상태값
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [voteCompleteModal, setVoteCompleteModal] = useState(false);
+  const [showShortageModal, setShowShortageModal] = useState(false);
+
   const prevGenderRef = useRef("");
+  const [nextCursor, setNextCursor] = useState();
+  const [list, setList] = useState([]);
   const [activeTapValue, setActiveTabValue] = useState({
     gender: "female",
     cursor: 0,
     pageSize: window.innerWidth >= 1200 ? 10 : 5,
   });
-  const [nextCursor, setNextCursor] = useState();
-  const [list, setList] = useState([]);
 
   const activeTapValueHandler = (inputValue) => {
     setActiveTabValue({
@@ -60,7 +68,7 @@ const MonthChart = () => {
     const handleLoad = async () => {
       const result = await getCharts(activeTapValue);
 
-      if (!result.success) {
+      if (!result.idols) {
         console.error(result.message);
         return;
       }
@@ -84,11 +92,41 @@ const MonthChart = () => {
     handleLoad();
   }, [activeTapValue]);
 
+  // VoteModal 클릭 핸들러
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
   return (
     <Section>
       <Header>
         <H2>이달의 차트</H2>
-        <VoteButton size={"small"} icon={chartIcon}>
+
+        {isModalOpen && (
+          <VoteModal
+            activeTapValue={activeTapValue}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            setVoteCompleteModal={setVoteCompleteModal}
+            setShowShortageModal={setShowShortageModal}
+          />
+        )}
+        {voteCompleteModal && (
+          <ToastModal
+            isOpen={voteCompleteModal}
+            onClose={() => setVoteCompleteModal(false)}
+          >
+            투표가 완료되었습니다!
+          </ToastModal>
+        )}
+        {showShortageModal && (
+          <ToastModal
+            isOpen={showShortageModal}
+            onClose={() => setShowShortageModal(false)}
+          >
+            앗! 투표하기 위한 <span>크레딧</span>이 부족해요!
+          </ToastModal>
+        )}
+        <VoteButton size={"small"} icon={chartIcon} onClick={handleOpenModal}>
           차트 투표하기
         </VoteButton>
       </Header>
@@ -113,7 +151,7 @@ const MonthChart = () => {
 
 const Section = styled.section`
   width: 327px;
-  margin: 0 auto;
+  margin: 0px auto;
   background-color: var(--black-200);
 
   @media (min-width: 768px) {
@@ -171,7 +209,7 @@ const Ul = styled.ul`
 
 const MoreView = styled.button`
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 70px;
   width: 326px;
   height: 42px;
   border-radius: 3px;

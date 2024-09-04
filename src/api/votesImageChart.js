@@ -10,23 +10,8 @@ export const postVotes = async (id) => {
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      return {
-        success: false,
-        status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
-      };
-    } else if (error.request) {
-      return {
-        success: false,
-        message: "서버에서 응답을 받지 못했습니다",
-      };
-    } else {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    console.error("투표 생성에 실패했습니다.", error);
+    throw error;
   }
 };
 
@@ -38,23 +23,8 @@ export const postImage = async (url) => {
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      return {
-        success: false,
-        status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
-      };
-    } else if (error.request) {
-      return {
-        success: false,
-        message: "서버에서 응답을 받지 못했습니다",
-      };
-    } else {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    console.error("이미지를 생성하는데 실패했습니다.", error);
+    throw error;
   }
 };
 
@@ -69,26 +39,10 @@ export const getCharts = async ({ gender, cursor, pageSize }) => {
     });
 
     return {
-      success: true, // 모든 성공적인 응답에 success: true 추가
       ...response.data,
     };
   } catch (error) {
-    if (error.response) {
-      return {
-        success: false,
-        status: error.response.status,
-        message: error.response.data.message || "관리자에게 문의 부탁드립니다",
-      };
-    } else if (error.request) {
-      return {
-        success: false,
-        message: "서버에서 응답을 받지 못했습니다",
-      };
-    } else {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    console.error("차트를 가져오는데 실패했습니다.", error);
+    throw error;
   }
 };
