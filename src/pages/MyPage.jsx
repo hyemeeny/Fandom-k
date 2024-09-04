@@ -17,8 +17,13 @@ export default function MyPage() {
 
   useEffect(() => {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
-    setFavoriteIdols(storedIdols);
-    loadIdols(0, pageSize, true);
+    // 중복 제거를 위해 Set을 사용하여 아이돌 id 기준으로 고유 값만 남김
+    const uniqueStoredIdols = Array.from(
+      new Set(storedIdols.map((idol) => idol.id)),
+    ).map((id) => storedIdols.find((idol) => idol.id === id));
+
+    setFavoriteIdols(uniqueStoredIdols);
+    loadIdols(0, 16, true);
   }, []);
 
   function handleLeftClick() {
@@ -48,9 +53,10 @@ export default function MyPage() {
       .flat()
       .filter((idol) => selectedIdols.includes(idol.id));
 
-    // 중복제거
+    // 중복 제거를 위한 Map을 활용
     const idolMap = new Map(favoriteIdols.map((idol) => [idol.id, idol]));
-    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol));
+    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol)); // 중복 제거
+
     const newFavoriteIdols = Array.from(idolMap.values());
 
     setFavoriteIdols(newFavoriteIdols);
@@ -173,6 +179,14 @@ const Title = styled.h2`
   font-size: 26px;
   font-weight: 700;
   color: var(--white-darker);
+
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 const Slide = styled.div`

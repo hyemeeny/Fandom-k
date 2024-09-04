@@ -8,11 +8,15 @@ export default function IdolList({
   favoriteIdols,
   onSelect,
 }) {
+  const filteredIdols = currentIdols.filter(
+    (idol) => !favoriteIdols.some((favIdol) => favIdol.id === idol.id),
+  );
+
   return (
     <>
-      {currentIdols.map((idol) => {
-        const isSelected =
-          selectedIdols.includes(idol.id) && !favoriteIdols.includes(idol.id);
+      {filteredIdols.map((idol) => {
+        const isSelected = selectedIdols.includes(idol.id);
+
         return (
           <ProfileWrapper key={idol.id} onClick={() => onSelect(idol.id)}>
             <Avatar imageUrl={idol.profilePicture} isSelected={isSelected} />
