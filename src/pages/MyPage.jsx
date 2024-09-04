@@ -20,6 +20,14 @@ export default function MyPage() {
     loadIdols(0, pageSize, true);
   }, [pageSize]);
 
+  // 스크롤 삭제
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   function handleLeftClick() {
     if (currentPageIndex > 0) {
       setCurrentPageIndex((prevIndex) => prevIndex - 1);
@@ -35,6 +43,10 @@ export default function MyPage() {
   }
 
   function handleSelect(id) {
+    if (favoriteIdols.some((idol) => idol.id === id)) {
+      return;
+    }
+
     if (selectedIdols.includes(id)) {
       setSelectedIdols((prevList) => prevList.filter((item) => item !== id));
       return;
