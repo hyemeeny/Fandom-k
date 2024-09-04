@@ -2,7 +2,7 @@ import styled from "@emotion/styled/macro";
 import creditIcon from "../assets/icon/credit_icon.svg";
 import { useState } from "react";
 import CreditRechargeModal from "./Modal/CreditRechargeModal";
-import { useCredit } from "./hooks/useLocalStorage";
+import { useCredit } from "../hooks/useLocalStorage";
 
 const Credit = () => {
   const [isRechargeModalOpen, setIsRechargeModalOpen] = useState(false);
@@ -22,7 +22,7 @@ const Credit = () => {
         <CreditWrap>
           <HeadText>내 크레딧</HeadText>
           <IconCreditWrap>
-            <img src={creditIcon} />
+            <img src={creditIcon} alt="크레딧 아이콘" />
             <CreditDiv>{value}</CreditDiv>
           </IconCreditWrap>
         </CreditWrap>

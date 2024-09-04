@@ -4,6 +4,7 @@ import BoxButton from "../BoxButton";
 import { ReactComponent as CoverDonation } from "../../assets/img/cover_donation.svg";
 import { ReactComponent as Credit } from "../../assets/img/credit.svg";
 import DonationModal from "../Modal/DonationModal";
+import { ToastModal } from "../Modal/ToastModal";
 
 const CardWrapper = styled.div`
   width: 282px;
@@ -136,6 +137,8 @@ const ProgressBar = styled.div`
 
 function CardProfile({ item }) {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
+  const [isToastMoalOpen, setIsToastMoalOpen] = useState(false);
+
   const percentage = Math.min(
     (item.receivedDonations / item.targetDonation) * 100,
     100,
@@ -182,7 +185,16 @@ function CardProfile({ item }) {
         isOpen={isModalOpen}
         onClose={closeModal}
         selectedItem={item}
+        setIsToastMoalOpen={setIsToastMoalOpen}
       />
+      {isToastMoalOpen && (
+        <ToastModal
+          isOpen={isToastMoalOpen}
+          onClose={() => setIsToastMoalOpen(false)}
+        >
+          후원이 완료되었습니다!
+        </ToastModal>
+      )}
     </>
   );
 }

@@ -136,6 +136,22 @@ const style = css`
   html {
     background-color: #02000e;
     min-height: 100vh;
+    scrollbar-gutter: stable;
+  }
+  body::-webkit-scrollbar {
+    width: 8px;
+    background: linear-gradient(180deg, #f96d69 0%, #fe5493 100%);
+    opacity: 0.5;
+  }
+  body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f96d69 0%, #fe5493 100%);
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    opacity: 0.5;
+  }
+  body::-webkit-scrollbar-track {
+    background-color: #02000e;
   }
 
   :root {
