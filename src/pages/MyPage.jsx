@@ -155,6 +155,9 @@ const Divider = styled.div`
 
 const Container = styled.div`
   width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+
   @media (max-width: 1024px) {
     width: 524px;
     grid-template-columns: repeat(4, 1fr);
@@ -164,8 +167,6 @@ const Container = styled.div`
     width: 328px;
     grid-template-columns: repeat(3, 1fr);
   }
-  margin: 0 auto;
-  align-items: center;
 `;
 
 const Title = styled.h2`
@@ -207,8 +208,8 @@ const ArrowWarpper = styled.div`
   }
 
   @media (max-width: 768px) {
-    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
-    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
+    left: ${(props) => (props.direction === "left" ? "-15%" : "")};
+    right: ${(props) => (props.direction === "right" ? "-15%" : "")};
   }
 `;
 
