@@ -1,22 +1,20 @@
 import axios from "axios";
+import { retryRequest } from "./retryApi";
 
 const BASE_URL = "https://fandom-k-api.vercel.app";
 
 // 아이돌 목록 조회
 export const getIdols = async (cursor = 0, pageSize = 10, keyword = "") => {
-  try {
-    const response = await axios.get(`${BASE_URL}/9-2/idols`, {
+  const axiosRequestFunction = () =>
+    axios.get(`${BASE_URL}/9-2/idols`, {
       params: {
         cursor: cursor, // cursor 값을 직접 전달
         pageSize: pageSize,
         keyword: keyword,
       },
     });
-    return response.data;
-  } catch (error) {
-    console.error("아이돌 목록을 조회하는데 실패했습니다.", error);
-    throw error;
-  }
+
+  return retryRequest(axiosRequestFunction); // 재시도 가능한 요청
 };
 // 새로운 아이돌 생성
 export const postIdols = async () => {
