@@ -140,7 +140,6 @@ const MonthChart = () => {
             order={index + 1}
           />
         ))}
-        ;
       </Ul>
       <MoreView disabled={!nextCursor} onClick={handleLoadMore}>
         더 보기
