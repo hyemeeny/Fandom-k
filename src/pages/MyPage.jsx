@@ -1,12 +1,11 @@
 import styled from "@emotion/styled/macro";
 import React, { useState, useEffect } from "react";
-import { LeftArrowButton, RightArrowButton } from "../components/ArrowButton";
 import BoxButton from "../components/BoxButton";
 import addIcon from "../assets/icon/add_icon.svg";
 import FavoriteIdolList from "../components/Mypage/FavoriteIdolList";
-import IdolList from "../components/Mypage/IdolList";
 import { useIdols } from "../hooks/useIdols";
 import { usePageSize } from "../hooks/usePageSize";
+import IdolSlide from "../components/Mypage/IdolSlide";
 
 export default function MyPage() {
   const { pages, cursor, currentPageIndex, setCurrentPageIndex, loadIdols } =
@@ -17,14 +16,9 @@ export default function MyPage() {
 
   useEffect(() => {
     const storedIdols = JSON.parse(localStorage.getItem("favoriteIdols")) || [];
-    // 중복 제거를 위해 Set을 사용하여 아이돌 id 기준으로 고유 값만 남김
-    const uniqueStoredIdols = Array.from(
-      new Set(storedIdols.map((idol) => idol.id)),
-    ).map((id) => storedIdols.find((idol) => idol.id === id));
-
-    setFavoriteIdols(uniqueStoredIdols);
-    loadIdols(0, 16, true);
-  }, []);
+    setFavoriteIdols(storedIdols);
+    loadIdols(0, pageSize, true);
+  }, [pageSize]);
 
   function handleLeftClick() {
     if (currentPageIndex > 0) {
@@ -53,10 +47,9 @@ export default function MyPage() {
       .flat()
       .filter((idol) => selectedIdols.includes(idol.id));
 
-    // 중복 제거를 위한 Map을 활용
+    // 중복제거
     const idolMap = new Map(favoriteIdols.map((idol) => [idol.id, idol]));
-    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol)); // 중복 제거
-
+    idolsToAdd.forEach((idol) => idolMap.set(idol.id, idol));
     const newFavoriteIdols = Array.from(idolMap.values());
 
     setFavoriteIdols(newFavoriteIdols);
@@ -83,20 +76,16 @@ export default function MyPage() {
       <Divider />
       <AddWrapper>
         <Title>관심 있는 아이돌을 추가해보세요.</Title>
-        <Slide>
-          <ArrowWarpper direction="left">
-            <LeftArrowButton onClick={handleLeftClick} />
-          </ArrowWarpper>
-          <IdolList
-            currentIdols={currentIdols}
-            favoriteIdols={favoriteIdols}
-            selectedIdols={selectedIdols}
-            onSelect={handleSelect}
-          />
-          <ArrowWarpper direction="right" isDisabled={isLoadDisabled}>
-            <RightArrowButton onClick={handleRightClick} />
-          </ArrowWarpper>
-        </Slide>
+        <IdolSlide
+          currentIdols={currentIdols}
+          favoriteIdols={favoriteIdols}
+          selectedIdols={selectedIdols}
+          currentPageIndex={currentPageIndex}
+          onSelect={handleSelect}
+          onLeftClick={handleLeftClick}
+          onRightClick={handleRightClick}
+          isDisabled={isLoadDisabled}
+        />
         <BoxButtonWrapper>
           <BoxButton
             size="medium"
@@ -115,6 +104,7 @@ export default function MyPage() {
 const AddedWrapper = styled.section`
   width: 1200px;
   margin: 0 auto;
+  margin-top: 30px;
 
   @media (max-width: 1024px) {
     width: 524px;
@@ -186,44 +176,6 @@ const Title = styled.h2`
 
   @media (max-width: 768px) {
     font-size: 16px;
-  }
-`;
-
-const Slide = styled.div`
-  width: 1200px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(2, auto);
-  position: relative;
-  row-gap: 16px;
-  gap: 16px;
-  margin-top: 32px;
-
-  @media (max-width: 1024px) {
-    width: 524px;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    width: 328px;
-    grid-template-columns: repeat(3, 1fr);
-  }
-`;
-
-const ArrowWarpper = styled.div`
-  position: absolute;
-  top: 25%;
-  left: ${(props) => (props.direction === "left" ? "-5%" : "")};
-  right: ${(props) => (props.direction === "right" ? "-5%" : "")};
-
-  @media (max-width: 1024px) {
-    left: ${(props) => (props.direction === "left" ? "-10%" : "")};
-    right: ${(props) => (props.direction === "right" ? "-10%" : "")};
-  }
-
-  @media (max-width: 768px) {
-    left: ${(props) => (props.direction === "left" ? "-15%" : "")};
-    right: ${(props) => (props.direction === "right" ? "-15%" : "")};
   }
 `;
 
