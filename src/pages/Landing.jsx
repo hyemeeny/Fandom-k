@@ -22,7 +22,7 @@ const Landing = () => {
     <>
       <Container className="TopDesign">
         <AudioControlWrap>
-          <AudioControlButton musicPath="/audio/background-music.mp3" />
+          <AudioControlButton />
         </AudioControlWrap>
         <BackgroundImg
           src={MainTopImg}

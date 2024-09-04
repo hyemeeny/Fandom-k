@@ -40,7 +40,7 @@ const Header = () => {
     <>
       <HeaderStyle>
         <Container>
-          <AudioControlButton musicPath="/audio/background-music.mp3" />
+          <AudioControlButton />
           <LogoWrap>
             <Link to="/">
               <Logo src={LogoImg} alt="FAMDOM-K" />

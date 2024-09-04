@@ -1,9 +1,9 @@
-import styled from "@emotion/styled/macro";
-import { useAudio } from "../hooks/useAudio";
+import { useAudio } from "../hooks/AudioContext";
 import { FaPlay, FaPause } from "react-icons/fa";
+import styled from "@emotion/styled/macro";
 
-const AudioControlButton = ({ musicPath }) => {
-  const [togglePlayback, isPlaying] = useAudio(musicPath);
+const AudioControlButton = () => {
+  const { togglePlayback, isPlaying } = useAudio();
 
   return (
     <Button
