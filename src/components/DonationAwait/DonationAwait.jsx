@@ -23,6 +23,7 @@ const Container = styled.div`
 
   .slick-prev,
   .slick-next {
+    top: 170px;
     width: 40px;
     height: 78.33px;
     transform: none;
