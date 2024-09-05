@@ -22,9 +22,9 @@ export default function MyPage() {
 
   // 스크롤 삭제
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflowX = "hidden";
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflowX = "auto";
     };
   }, []);
 

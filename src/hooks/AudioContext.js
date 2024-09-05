@@ -19,31 +19,6 @@ export const AudioProvider = ({ children }) => {
     audio.volume = 0;
     audioRef.current = audio;
 
-    // 자동으로 오디오를 재생
-    const playAudio = async () => {
-      if (audioRef.current && !isPlaying) {
-        try {
-          await audioRef.current.play();
-          setIsPlaying(true); // 재생 상태 업데이트
-
-          // 서서히 볼륨을 증가시키는 함수
-          let volume = 0;
-          const fadeInInterval = setInterval(() => {
-            if (volume < 0.5) {
-              volume += 0.01;
-              audioRef.current.volume = Math.min(volume, 0.5);
-            } else {
-              clearInterval(fadeInInterval);
-            }
-          }, 100);
-        } catch (error) {
-          console.error("재생 실패: ", error);
-        }
-      }
-    };
-
-    playAudio();
-
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -62,6 +37,17 @@ export const AudioProvider = ({ children }) => {
         try {
           await audioRef.current.play();
           setIsPlaying(true);
+
+          // 서서히 볼륨을 증가시키는 함수
+          let volume = 0;
+          const fadeInInterval = setInterval(() => {
+            if (volume < 0.5) {
+              volume += 0.01;
+              audioRef.current.volume = Math.min(volume, 0.5);
+            } else {
+              clearInterval(fadeInInterval);
+            }
+          }, 100);
         } catch (error) {
           console.error("재생 실패: ", error);
         }
