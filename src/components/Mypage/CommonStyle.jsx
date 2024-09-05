@@ -5,7 +5,6 @@ export const ProfileWrapper = styled.div`
   text-align: center;
   cursor: pointer;
   position: relative;
-  z-index: 9999;
 `;
 
 export const Name = styled.p`
