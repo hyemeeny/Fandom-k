@@ -1,4 +1,5 @@
 import axios from "axios";
+import { retryRequest } from "./retryApi";
 
 const SERVER_URL = "https://fandom-k-api.vercel.app";
 
@@ -28,9 +29,11 @@ export const postImage = async (url) => {
   }
 };
 
+// 차트 데이터를 조회하는 함수
 export const getCharts = async ({ gender, cursor, pageSize }) => {
-  try {
-    const response = await axios.get(`${SERVER_URL}/9-2/charts/{gender}`, {
+  // Axios 요청을 래핑하는 함수 정의
+  const axiosRequestFunction = () =>
+    axios.get(`${SERVER_URL}/9-2/charts/${gender}`, {
       params: {
         gender: gender,
         cursor: cursor,
@@ -38,11 +41,5 @@ export const getCharts = async ({ gender, cursor, pageSize }) => {
       },
     });
 
-    return {
-      ...response.data,
-    };
-  } catch (error) {
-    console.error("차트를 가져오는데 실패했습니다.", error);
-    throw error;
-  }
+  return retryRequest(axiosRequestFunction);
 };

@@ -1,24 +1,23 @@
 import axios from "axios";
+import { retryRequest } from "./retryApi";
 
 const BASE_URL = "https://fandom-k-api.vercel.app/9-2/donations";
 
 // GET - getDonation: 특정 ID의 조공 데이터를 가져옵니다.
-// 작동예시 = getDonation(cursor,pageSize) < type(number)
+// 작동예시 = getDonation(cursor, pageSize) < type(number)
 export const getDonation = async (cursor = 0, pageSize = 10) => {
-  try {
-    const response = await axios.get(BASE_URL, {
+  // Axios 요청을 래핑하는 함수 정의
+  const axiosRequestFunction = () =>
+    axios.get(BASE_URL, {
       params: {
         cursor: cursor,
         pageSize: pageSize,
       },
     });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching donation:", error);
-    throw error;
-  }
-};
 
+  // retryRequest 함수를 사용하여 재요청 가능하게 설정
+  return retryRequest(axiosRequestFunction);
+};
 // POST - createDonation: 새로운 기부 데이터를 생성합니다.
 // {
 //   "deadline": "2024-08-28T05:06:02.943Z",
