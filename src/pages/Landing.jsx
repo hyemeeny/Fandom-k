@@ -105,7 +105,7 @@ export const Container = styled.section`
   overflow: hidden;
 
   @media (max-width: 1200px) {
-    padding: 0;
+    padding: 10rem;
   }
 
   .link-button {
@@ -121,8 +121,18 @@ export const Container = styled.section`
   }
 
   &.TopDesign {
-    background: url(${TopDesign}) left top no-repeat;
     padding: 0;
+    position: relative;
+
+    &::after {
+      content: "";
+      background: url(${TopDesign}) left top no-repeat;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 288px;
+      height: 331px;
+    }
 
     .TopImg,
     .TopGradient {
