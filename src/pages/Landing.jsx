@@ -222,4 +222,5 @@ const AudioControlWrap = styled.div`
   position: fixed;
   top: 15px;
   left: 15px;
+  z-index: 100;
 `;
