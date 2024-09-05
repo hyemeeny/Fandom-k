@@ -120,7 +120,7 @@ const User = styled.img`
 
 const CreditWrap = styled.div`
   position: absolute; /* 다른 요소에 영향을 주지 않도록 절대 위치로 설정 */
-  right: 80px; /* 오른쪽 여백 설정 */
+  right: 65px; /* 오른쪽 여백 설정 */
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -129,4 +129,8 @@ const CreditText = styled.span`
   color: var(--white);
   font-size: 16px;
   font-weight: 700;
+
+  @media (max-width: 744px) {
+    font-size: 12px;
+  }
 `;

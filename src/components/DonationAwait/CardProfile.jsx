@@ -164,7 +164,7 @@ function CardProfile({ item }) {
         <Footer>
           <DonationInfo>
             <DonationDetails>
-              <CreditIcon width="12" height="12" />
+              <CreditIcon width="14px" height="14px" />
               <DonationAmount>
                 {item.receivedDonations.toLocaleString()}
               </DonationAmount>
