@@ -59,7 +59,7 @@ const SelectedImage = styled.img`
   z-index: 2;
 `;
 
-function Avatar({ imageUrl, isSelected, isFavorite }) {
+function Avatar({ imageUrl, isSelected = false, isFavorite = false }) {
   const displayImageUrl =
     imageUrl === "https://example.com/profile.jpg" ? emptyicon : imageUrl;
 
@@ -80,11 +80,6 @@ Avatar.propTypes = {
   imageUrl: PropTypes.string.isRequired, // 이미지 URL을 문자열로 받습니다.
   isSelected: PropTypes.bool.isRequired,
   isFavorite: PropTypes.bool.isRequired,
-};
-
-Avatar.defaultProps = {
-  isSelected: false,
-  isFavorite: false,
 };
 
 export default Avatar;

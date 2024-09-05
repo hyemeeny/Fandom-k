@@ -1,7 +1,8 @@
 import styled from "@emotion/styled/macro";
 
-const Tabs = ({ activeTapValue, onClick }) => {
+const Tabs = ({ activeTapValue, onClick, disabled }) => {
   const tabChange = (e) => {
+    if (disabled) return;
     onClick(e.target.value);
   };
 
@@ -12,6 +13,7 @@ const Tabs = ({ activeTapValue, onClick }) => {
           isActive={activeTapValue.gender === "female"}
           onClick={tabChange}
           value="female"
+          disabled={disabled}
         >
           이달의 여자 아이돌
         </TabButton>
@@ -19,6 +21,7 @@ const Tabs = ({ activeTapValue, onClick }) => {
           isActive={activeTapValue.gender === "male"}
           onClick={tabChange}
           value="male"
+          disabled={disabled}
         >
           이달의 남자 아이돌
         </TabButton>
@@ -56,8 +59,11 @@ const TabButton = styled.button`
   font-size: 14px;
   line-height: 18px;
   text-align: center;
-  cursor: pointer;
+  cursor: ${(props) =>
+    props.disabled ? "not-allowed" : "pointer"}; // disabled 상태에서 커서 변경
   transition: background-color 0.5s ease, color 0.5s ease;
+  opacity: ${(props) =>
+    props.disabled ? 0.5 : 1}; // disabled 상태에서 투명도 적용
 
   &:hover {
     color: #ffffff;

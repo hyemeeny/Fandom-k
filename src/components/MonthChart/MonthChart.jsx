@@ -8,12 +8,16 @@ import chartIcon from "../../assets/icon/chart.svg";
 import VoteModal from "../Modal/VoteModal";
 
 import { ToastModal } from "../Modal/ToastModal";
+import { retryRequest } from "../../api/retryApi";
+import ErrorBox from "../ErrorBox";
 
 const MonthChart = () => {
   // VoteModal 상태값
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [voteCompleteModal, setVoteCompleteModal] = useState(false);
   const [showShortageModal, setShowShortageModal] = useState(false);
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
+  const [error, setError] = useState(null);
 
   const prevGenderRef = useRef("");
   const [nextCursor, setNextCursor] = useState();
@@ -24,6 +28,7 @@ const MonthChart = () => {
     pageSize: window.innerWidth >= 1200 ? 10 : 5,
   });
 
+  // 탭 선택 시 동작
   const activeTapValueHandler = (inputValue) => {
     setActiveTabValue({
       gender: inputValue,
@@ -32,64 +37,63 @@ const MonthChart = () => {
     });
   };
 
-  const handleLoadMore = async () => {
-    setActiveTabValue((prevValue) => ({
-      ...prevValue,
-      cursor: nextCursor,
-    }));
+  // 차트 데이터를 로드하는 함수
+  const fetchChartData = async (tapValue) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await getCharts(tapValue); // 여기서 이미 retryRequest가 적용됨
+
+      if (result && result.idols && Array.isArray(result.idols)) {
+        setList((prevList) =>
+          prevGenderRef.current === tapValue.gender
+            ? [...prevList, ...result.idols]
+            : result.idols,
+        );
+        prevGenderRef.current = tapValue.gender;
+        setNextCursor(result.nextCursor);
+      } else {
+        setError(
+          "데이터 형식이 올바르지 않습니다. 페이지를 새로고침 해주세요.",
+        );
+      }
+    } catch (error) {
+      setError(
+        "차트 정보를 불러오는데 오류가 발생했습니다. 페이지를 새로고침 해주세요.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // '더 보기' 버튼 클릭 시 더 많은 데이터를 로드
+  const handleLoadMore = () => {
+    if (nextCursor) {
+      fetchChartData({ ...activeTapValue, cursor: nextCursor });
+    }
+  };
+
+  // 윈도우 크기 변화에 따라 페이지 사이즈 업데이트
   useEffect(() => {
     const handleResize = () => {
       const newPageSize = window.innerWidth >= 1200 ? 10 : 5;
-
       setActiveTabValue((prevValue) => {
         if (prevValue.pageSize !== newPageSize) {
-          // pageSize가 변경된 경우에만 초기화
           setList([]);
-          return {
-            ...prevValue,
-            pageSize: newPageSize,
-            cursor: 0,
-          };
+          return { ...prevValue, pageSize: newPageSize, cursor: 0 };
         }
         return prevValue;
       });
     };
-
     window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 탭 변경 시 데이터를 로드
   useEffect(() => {
-    const handleLoad = async () => {
-      const result = await getCharts(activeTapValue);
-
-      if (!result.idols) {
-        console.error(result.message);
-        return;
-      }
-
-      const { idols, nextCursor } = result;
-
-      if (Array.isArray(idols)) {
-        // idols가 배열인지 확인
-        if (prevGenderRef.current === activeTapValue.gender) {
-          setList((prevValue) => [...prevValue, ...idols]);
-        } else {
-          setList(idols);
-          prevGenderRef.current = activeTapValue.gender;
-        }
-        setNextCursor(nextCursor);
-      } else {
-        console.error("배열이 아닙니다.", idols);
-      }
-    };
-
-    handleLoad();
+    setList([]);
+    fetchChartData(activeTapValue);
   }, [activeTapValue]);
 
   // VoteModal 클릭 핸들러
@@ -130,20 +134,30 @@ const MonthChart = () => {
           차트 투표하기
         </VoteButton>
       </Header>
-      <Tabs activeTapValue={activeTapValue} onClick={activeTapValueHandler} />
-      <Ul>
-        {list.map((item, index) => (
-          <Chart
-            key={item.id}
-            item={item}
-            isLast={index === list.length - 1}
-            order={index + 1}
+      {error ? (
+        <ErrorBox error={error} />
+      ) : (
+        <>
+          <Tabs
+            activeTapValue={activeTapValue}
+            onClick={activeTapValueHandler}
+            disabled={loading}
           />
-        ))}
-      </Ul>
-      <MoreView disabled={!nextCursor} onClick={handleLoadMore}>
-        더 보기
-      </MoreView>
+          <Ul>
+            {list.map((item, index) => (
+              <Chart
+                key={item.id}
+                item={item}
+                isLast={index === list.length - 1}
+                order={index + 1}
+              />
+            ))}
+          </Ul>
+          <MoreView disabled={!nextCursor} onClick={handleLoadMore}>
+            더 보기
+          </MoreView>
+        </>
+      )}
     </Section>
   );
 };
