@@ -13,6 +13,7 @@ import DescriptionImg2 from "../assets/img/home_2.svg";
 import DescriptionImg3 from "../assets/img/home_3.svg";
 import BoxButton from "../components/BoxButton";
 import DescriptionContent from "../components/DescriptionContent";
+import AudioControlButton from "../components/AudioControlButton";
 
 const Landing = () => {
   const { target1, target2, target3 } = useScrollAnimation();
@@ -20,6 +21,9 @@ const Landing = () => {
   return (
     <>
       <Container className="TopDesign">
+        <AudioControlWrap>
+          <AudioControlButton />
+        </AudioControlWrap>
         <BackgroundImg
           src={MainTopImg}
           alt="Idol"
@@ -202,4 +206,10 @@ const TitleWrap = styled.div`
   position: absolute;
   top: 0;
   padding-top: 140px;
+`;
+
+const AudioControlWrap = styled.div`
+  position: fixed;
+  top: 15px;
+  left: 15px;
 `;

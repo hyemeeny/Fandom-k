@@ -6,6 +6,7 @@ import UserImg from "../assets/img/userIcon.svg";
 import { useCredit } from "../hooks/useLocalStorage";
 import { ReactComponent as CreditIcon } from "../assets/icon/credit_icon.svg";
 import CreditRechargeModal from "../components/Modal/CreditRechargeModal";
+import AudioControlButton from "../components/AudioControlButton";
 
 const Header = () => {
   const [credit] = useCredit(0); // 현재 크레딧을 가져옴
@@ -39,6 +40,7 @@ const Header = () => {
     <>
       <HeaderStyle>
         <Container>
+          <AudioControlButton />
           <LogoWrap>
             <Link to="/">
               <Logo src={LogoImg} alt="FAMDOM-K" />
