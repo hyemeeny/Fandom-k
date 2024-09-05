@@ -205,6 +205,7 @@ const H2 = styled.h2`
 
 const Ul = styled.ul`
   margin-bottom: 33px;
+  min-height: 450px;
 
   @media (min-width: 768px) {
     margin-bottom: 27px;
