@@ -168,7 +168,7 @@ const VoteBox = styled.ul`
   }
 
   @media (max-width: 744px) {
-    height: 600px;
+    height: 70vh;
   }
 `;
 
